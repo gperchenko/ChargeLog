@@ -1,0 +1,45 @@
+﻿@inject IChargeLogService _chargeLogService
+
+<h4>New Location</h4>
+
+<EditForm Model="@newLocation" OnValidSubmit="@AddLocation">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-2">
+            <label for="name">Location Name</label>
+            <InputText id="name" @bind-Value="newLocation.Name" class="form-control" />
+        </div>
+        <div class="col-2">
+            <label for="address">Address</label>
+            <InputText id="address" @bind-Value="newLocation.Address" class="form-control" />
+        </div>
+        <div class="col-1 align-self-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int NetworkId { get; set; }
+
+    private LocationView newLocation = new LocationView();
+
+    private async Task AddLocation()
+    {
+        var location = new Location()
+            {
+                Name = newLocation.Name,
+                Address = newLocation.Address,
+                NetworkId = NetworkId
+            };
+
+       
+         await _chargeLogService.AddLocationAsync(location);
+        
+
+        newLocation = new LocationView();
+    }
+}

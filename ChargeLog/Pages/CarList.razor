@@ -1,0 +1,82 @@
+﻿@page "/CarList"
+
+@inject IChargeLogService _chargeLogService
+
+<h1>Car List</h1>
+
+<h4>Add New Car</h4>
+
+<EditForm Model="@newCar" OnValidSubmit="@AddCar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+     <div class="row">
+        <div class="col-1">
+            <label for="year">Year</label>
+            <InputText id="year" @bind-Value="newCar.Year" class="form-control" />
+        </div>
+        <div class="col-2">
+            <label for="make">Make</label>
+            <InputText id="make" @bind-Value="newCar.Make" class="form-control" />
+        </div>
+        <div class="col-2">
+            <label for="model">Model</label>
+            <InputText id="model" @bind-Value="newCar.Model" class="form-control" />
+        </div>
+        <div class="col-1 align-self-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+     </div>
+</EditForm>
+
+@if (cars is null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Make</th>
+                <th>Model</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in cars)
+            {
+                <tr>
+                    <td>@car.Year</td>
+                    <td>@car.Make</td>
+                    <td>@car.Model</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Car> cars = new List<Car>();
+    private CarView newCar = new CarView();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cars = await _chargeLogService.GetCarsAsync();
+    }
+
+    private async Task AddCar()
+    {
+        var car = new Car()
+        {
+            Year = newCar.Year,
+            Make = newCar.Make,
+            Model = newCar.Model
+        };
+        
+        await _chargeLogService.AddCarAsync(car);
+
+        cars = await _chargeLogService.GetCarsAsync();
+
+        newCar = new CarView();
+    }
+}

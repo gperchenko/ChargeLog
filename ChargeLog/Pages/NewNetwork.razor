@@ -1,0 +1,56 @@
+﻿@inject IChargeLogService _chargeLogService
+
+<h4>New Network</h4>
+
+<EditForm Model="@newNetworkView" OnValidSubmit="@AddNetwork">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-2">
+            <label for="name">Network Name</label>
+            <InputText id="name" @bind-Value="newNetworkView.Name" class="form-control" />
+        </div>
+        <div class="col-1">
+            <label for="rate">Rate</label>
+            <InputText id="rate" @bind-Value="newNetworkView.Rate" class="form-control" />
+        </div>
+        <div class="col-2">
+            <label for="chargetype">Charge Type</label>
+            <InputSelect id="chargetype" @bind-Value="newNetworkView.DefaultChargeType" class="form-select">
+                <option value="@ChargeType.AC">@ChargeType.AC.ToString()</option>
+                <option value="@ChargeType.DC">@ChargeType.DC.ToString()</option>
+            </InputSelect>
+        </div>
+        <div class="col-2 align-self-end">
+            <InputCheckbox id="haveaccount" @bind-Value="newNetworkView.HaveAccount" class="form-check-input"></InputCheckbox>
+            <label for="haveaccount">Have Account</label>
+        </div>
+        <div class="col-1 align-self-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+     </div>
+</EditForm>
+
+@code {
+    private NetworkView newNetworkView = new NetworkView();
+
+    private async Task AddNetwork()
+    {
+        Double rate = 0;
+
+        Double.TryParse(newNetworkView.Rate, out rate);
+
+        var provider = new Network()
+            {
+                Name = newNetworkView.Name,
+                Rate = rate,
+                DefaultChargeType = newNetworkView.DefaultChargeType,
+                HaveAccount = newNetworkView.HaveAccount
+            };
+
+        await _chargeLogService.AddNetworkAsync(provider);
+
+        newNetworkView = new NetworkView();
+    }
+}

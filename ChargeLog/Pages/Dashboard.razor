@@ -1,0 +1,105 @@
+﻿@page "/"
+
+@inject IChargeLogService _chargeService
+
+<PageTitle>Dashboard</PageTitle>
+
+<h1>Dashboard</h1>
+
+@if (_tableRows.Count() == 0 )
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Provider Count</th>
+                <th>Location Count</th>
+                <th>Kw</th>
+                <th>Duration</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody >
+            @for(int idx = 0; idx < _tableRows.Count; idx++)
+            {
+               var idx1 = idx;
+
+               @if (idx == 0)   // format totals 
+               {
+                    <tr @onclick="()=> ShowDetails(idx1)" >
+                        <th scope="row">@_tableRows[idx].Title</th>
+                        <th scope="row">@_tableRows[idx].ProviderCount</th>
+                        <th scope="row">@_tableRows[idx].LocationCount</th>
+                        <th scope="row">@_tableRows[idx].Kw</th>
+                        <th scope="row">@_tableRows[idx].Duration.ToString(_config.TimeSpanFormat)</th>
+                        <th scope="row">@_tableRows[idx].TotalAmount</th>
+                    </tr>
+
+                    @if(_tableRows[idx].DisplayDetails)
+                    {
+                        <tr>
+                            <td colspan="6"><NetworkTotal></NetworkTotal></td>
+                        </tr>
+                    }
+               }
+               else             // line 
+               {
+                    <tr @onclick="()=> ShowDetails(idx1)" class=@(_tableRows[idx].DisplayDetails ? "table-info" : "")>
+                        <th scope="row">@_tableRows[idx].Title</th>
+                        <td>@_tableRows[idx].ProviderCount</td>
+                        <td>@_tableRows[idx].LocationCount</td>
+                        <td>@_tableRows[idx].Kw</td>
+                        <td>@_tableRows[idx].Duration.ToString(_config.TimeSpanFormat)</td>
+                        <td>@_tableRows[idx].TotalAmount</td>
+                    </tr>
+
+                    @if(_tableRows[idx].DisplayDetails)
+                    {
+                        <tr>
+                            <td colspan="6"><NetworkMonth></NetworkMonth></td>
+                        </tr>
+                    }
+               }
+               
+            }
+        </tbody>
+    </table>
+
+    <button class="btn" @onclick="LoadMonths">Previous Month</button>
+   
+}
+
+@code {
+    private int _currentMonth = 0;
+    private List<DashboardMainTableRow> _tableRows = new List<DashboardMainTableRow>();
+    private InterfaceConfig _config = new InterfaceConfig();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var totalsRow =  await _chargeService.GetTotals();
+        _config = _chargeService.GetConfig();
+
+        _tableRows.Add(totalsRow);
+        LoadMonths();
+
+    }
+
+    private void LoadMonths()
+    {
+        for(var idx = 0; idx < _config.MonthGroupSize; idx ++)
+        {
+            var monthRow = _chargeService.GetMonth(_currentMonth);    
+            _tableRows.Add(monthRow);
+            _currentMonth--;
+        }       
+    }
+
+    private void ShowDetails(int idx)
+    {
+        _tableRows[idx].DisplayDetails = !_tableRows[idx].DisplayDetails;
+    }
+}
