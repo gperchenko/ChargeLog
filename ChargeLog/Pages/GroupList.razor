@@ -1,0 +1,68 @@
+﻿@page "/GroupList"
+
+@inject IChargeLogService _chargeLogService
+
+<h1>Group List</h1>
+
+<h4>Add New Group</h4>
+
+<EditForm Model="@newGroup" OnValidSubmit="@AddGroup">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+     <div class="row">
+        <div class="col-2">
+            <label for="name">Name</label>
+            <InputText id="name" @bind-Value="newGroup.Name" class="form-control" />
+        </div>
+        <div class="col-1 align-self-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+     </div>
+</EditForm>
+
+@if (groups is null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in groups)
+            {
+                <tr>
+                    <td>@group.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Group> groups = new List<Group>();
+    private GroupView newGroup = new GroupView();
+
+    protected override async Task OnInitializedAsync()
+    {
+        groups = await _chargeLogService.GetGroupsAsync();
+    }
+
+    private async Task AddGroup()
+    {
+        var group = new Group()
+        {
+            Name = newGroup.Name
+        };
+        
+        await _chargeLogService.AddGroupAsync(group);
+
+        groups = await _chargeLogService.GetGroupsAsync();
+
+        newGroup = new GroupView();
+    }
+}

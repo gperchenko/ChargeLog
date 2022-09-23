@@ -68,6 +68,17 @@ namespace ChargeLog.Services
             await _chargeLogContext.SaveChangesAsync();
         }
 
+        public Task<List<Group>> GetGroupsAsync()
+        {
+            return _chargeLogContext.Groups.ToListAsync();
+        }
+
+        public async Task AddGroupAsync(Group group)
+        {
+            await _chargeLogContext.Groups.AddAsync(group);
+            await _chargeLogContext.SaveChangesAsync();
+        }
+
         public async Task AddNetworkAsync(Network network)
         {
             await _chargeLogContext.Networks.AddAsync(network);

@@ -10,6 +10,8 @@ namespace ChargeLog.Services
         InterfaceConfig GetConfig();
         Task<List<Car>> GetCarsAsync();
         Task AddCarAsync(Car car);
+        Task<List<Group>> GetGroupsAsync();
+        Task AddGroupAsync(Group group);
         Task AddNetworkAsync(Network network);
         Task AddLocationAsync(Location location);
         Task AddSessioonAsync(Session session);
