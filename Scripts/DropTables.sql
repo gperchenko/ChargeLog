@@ -5,6 +5,14 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[__EFM
 DROP TABLE [dbo].[__EFMigrationsHistory]
 GO
 
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GroupSession]') AND type in (N'U'))
+DROP TABLE [dbo].[GroupSession]
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Group]') AND type in (N'U'))
+DROP TABLE [dbo].[Group]
+GO
+
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Session]') AND type in (N'U'))
 DROP TABLE [dbo].[Session]
 GO

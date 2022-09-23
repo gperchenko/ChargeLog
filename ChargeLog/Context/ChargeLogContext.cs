@@ -10,6 +10,7 @@ namespace ChargeLog.Context
         public DbSet<Location> Locations { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         public ChargeLogContext(DbContextOptions<ChargeLogContext> options)
             : base(options)
@@ -68,6 +69,16 @@ namespace ChargeLog.Context
                .Property(p => p.Model)
                .IsRequired()
                .HasMaxLength(50);
+
+            // Group table setup 
+
+            builder.Entity<Group>()
+            .ToTable("Group");
+
+            builder.Entity<Group>()
+                .Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }
