@@ -13,5 +13,6 @@ namespace ChargeLog.Services
         Task AddNetworkAsync(Network network);
         Task AddLocationAsync(Location location);
         Task AddSessioonAsync(Session session);
+        Task<Network?> GetNetworkAsync(int networkId);
     }
 }

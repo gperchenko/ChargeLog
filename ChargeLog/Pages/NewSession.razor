@@ -23,10 +23,11 @@
             <label for="price">Price</label>
             <InputText id="price" @bind-Value="newSession.Price" class="form-control" />
         </div>
-        <div class="col-2 align-self-end">
-            <InputCheckbox id="isactualprice" @bind-Value="newSession.IsActualPrice" class="form-check-input"></InputCheckbox>
-            <label for="isactualrate">Is Actual Price</label>
+         <div class="col-1">
+            <label for="discount">Discount</label>
+            <InputText id="discount" @bind-Value="newSession.Discount" class="form-control" />
         </div>
+        
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

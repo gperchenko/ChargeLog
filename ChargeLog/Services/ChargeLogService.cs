@@ -57,9 +57,9 @@ namespace ChargeLog.Services
             };
         }
 
-        public async Task<List<Car>> GetCarsAsync()
+        public Task<List<Car>> GetCarsAsync()
         {
-            return await  _chargeLogContext.Cars.ToListAsync();
+            return _chargeLogContext.Cars.ToListAsync();
         }
 
         public async Task AddCarAsync(Car car)
@@ -84,6 +84,11 @@ namespace ChargeLog.Services
         {
             await _chargeLogContext.Sessions.AddAsync(session);
             await _chargeLogContext.SaveChangesAsync();
+        }
+
+        public Task<Network?> GetNetworkAsync(int networkId)
+        {            
+            return _chargeLogContext.Networks.FirstOrDefaultAsync(n => n.Id == networkId); ;
         }
     }
 }
