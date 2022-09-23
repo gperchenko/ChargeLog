@@ -16,5 +16,6 @@ namespace ChargeLog.DBModels
         public Car? Car { get; set; }
         public int? ThroughNetworkId { get; set; }
         public Network? ThroughNetwork { get; set; }
+        public List<Group>? Groups { get; set; }
     }
 }
