@@ -27,7 +27,26 @@
             <label for="discount">Discount</label>
             <InputText id="discount" @bind-Value="newSession.Discount" class="form-control" />
         </div>
-        
+        <div class="col-2">
+            <label for="chargetype">Charge Type</label>
+            <InputSelect id="chargetype" @bind-Value="newSession.ChargeType" class="form-select">
+                
+                <option value="@ChargeType.AC" selected="@(network?.DefaultChargeType==ChargeType.AC)">@ChargeType.AC.ToString()</option>
+                <option value="@ChargeType.DC" selected="@(network?.DefaultChargeType==ChargeType.DC)">@ChargeType.DC.ToString()</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-2">
+            <label for="car">Car</label>
+            <InputSelect id="car" @bind-Value="newSession.CarId" class="form-select">
+                @foreach(var car in cars)
+                {
+                    <option value="@car.Id" >@car.DisplayName</option>
+                }
+               
+            </InputSelect>
+        </div>
+
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
@@ -35,10 +54,21 @@
 </EditForm>
 
 @code {
-    //[Parameter]
-    //public int ProviderId { get; set; }
+    [Parameter]
+    public int NetworkId { get; set; }
+
+    [Parameter]
+    public int LocationId { get; set; }
 
     private SessionView newSession = new SessionView();
+    private Network? network;
+    private List<Car> cars = new List<Car>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        network = await _chargeLogService.GetNetworkAsync(NetworkId);
+        cars = await _chargeLogService.GetCarsAsync();
+    }
 
     private async Task AddSession()
     {
