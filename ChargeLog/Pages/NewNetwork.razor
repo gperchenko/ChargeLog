@@ -25,6 +25,9 @@
         <div class="col-2 align-self-end">
             <InputCheckbox id="haveaccount" @bind-Value="newNetworkView.HaveAccount" class="form-check-input"></InputCheckbox>
             <label for="haveaccount">Have Account</label>
+            <br/>
+            <InputCheckbox id="ispartner" @bind-Value="newNetworkView.IsPartner" class="form-check-input"></InputCheckbox>
+            <label for="ispartner">Is Partner</label>
         </div>
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -46,7 +49,8 @@
                 Name = newNetworkView.Name,
                 Rate = rate,
                 DefaultChargeType = newNetworkView.DefaultChargeType,
-                HaveAccount = newNetworkView.HaveAccount
+                HaveAccount = newNetworkView.HaveAccount,
+                IsPartner = newNetworkView.IsPartner
             };
 
         await _chargeLogService.AddNetworkAsync(provider);

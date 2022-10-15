@@ -11,6 +11,7 @@ namespace ChargeLog.ViewModels
         public string? Name { get; set; }
         public string? Rate { get; set; } = "0";
         public bool HaveAccount { get; set; } = false;       
+        public bool IsPartner { get; set; } = false;
         public ChargeType DefaultChargeType { get; set; }
     }
 }
