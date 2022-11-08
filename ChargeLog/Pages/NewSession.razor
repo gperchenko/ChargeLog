@@ -17,7 +17,7 @@
         </div>
         <div class="col-1">
             <label for="kwh">kWh</label>
-            <InputText id="kwh" @bind-Value="newSession.Kwh" class="form-control" />
+            <InputText id="kwh" @bind-Value="newSession.Kw" class="form-control" @onblur="() => UpdatePrice()" />
         </div>
         <div class="col-1">
             <label for="price">Price</label>
@@ -27,6 +27,12 @@
             <label for="discount">Discount</label>
             <InputText id="discount" @bind-Value="newSession.Discount" class="form-control" />
         </div>
+        <div class="col-2 align-self-end">
+            <InputCheckbox id="fulldiscount" @bind-Value="fullDiscount" class="form-check-input" @onclick="DiscountUpdate"></InputCheckbox>
+            <label for="fulldiscount">Full Discount</label>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-2">
             <label for="chargetype">Charge Type</label>
             <InputSelect id="chargetype" @bind-Value="newSession.ChargeType" class="form-select">
@@ -36,16 +42,32 @@
             </InputSelect>
         </div>
 
-        <div class="col-2">
-            <label for="car">Car</label>
-            <InputSelect id="car" @bind-Value="newSession.CarId" class="form-select">
-                @foreach(var car in cars)
+        @if (cars.Count > 1)
+        {
+            <div class="col-2">
+                <label for="car">Car</label>
+                <InputSelect id="car" @bind-Value="newSession.CarId" class="form-select">
+                    @foreach (var car in cars)
+                    {
+                        <option value="@car.Id" >@car.DisplayName</option>
+                    }
+                </InputSelect>
+            </div>
+        }
+
+        @if (network != null && !network.HaveAccount)
+        {
+            <div class="col-2">
+            <label for="partnernetwork">Partner Network</label>
+                <InputSelect id="partnernetwork" @bind-Value="newSession.ThroughNetworkId" class="form-select">
+                @foreach(var partnerNetwork in partnerNetworks)
                 {
-                    <option value="@car.Id" >@car.DisplayName</option>
+                    <option value="@partnerNetwork.Id" >@partnerNetwork.Name</option>
                 }
                
             </InputSelect>
         </div>
+        }
 
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -62,26 +84,72 @@
 
     private SessionView newSession = new SessionView();
     private Network? network;
+    private List<Network> partnerNetworks = new List<Network>();
     private List<Car> cars = new List<Car>();
+    private bool fullDiscount = false;
 
     protected override async Task OnInitializedAsync()
     {
         network = await _chargeLogService.GetNetworkAsync(NetworkId);
         cars = await _chargeLogService.GetCarsAsync();
+
+        if (network != null && !network.HaveAccount)
+        {
+            partnerNetworks = await _chargeLogService.GetNetworksPartnerWithAccount();
+        }
+    }
+
+    private void UpdatePrice()
+    {
+        if (network != null && network.Rate > 0)
+        {
+            double kw;
+            double.TryParse(newSession.Kw, out kw);
+
+            newSession.Price = (kw * network.Rate).ToString();
+        }
+    }
+
+    private void DiscountUpdate()
+    {
+        newSession.Discount = !fullDiscount ? newSession.Price : string.Empty;
     }
 
     private async Task AddSession()
     {
-      //  var location = new Location()
-      //      {
-      //          Name = newLocation.Name,
-      //          Address = newLocation.Address,
-      //          ProviderId = ProviderId
-      //      };
+        double kw = 0, price = 0, discount = 0;
 
+        double.TryParse(newSession.Kw, out kw);
+        double.TryParse(newSession.Price, out price);
+        double.TryParse(newSession.Discount, out discount);
 
-       // await _chargeLogService.AddLocationAsync(location);
+        if (cars.Count == 1)
+        {
+            var car = cars.FirstOrDefault();            
+            if (car != null)
+            {
+                newSession.CarId = car.Id;
+            }
+        }
 
+        var session = new Session()
+        {
+            Date = DateTime.Parse(newSession.Date),
+            Duration = TimeSpan.Parse(newSession.Duration),
+            Kw = kw,
+            Price = price,
+            Discount = discount,
+            ChargeType = newSession.ChargeType,
+            LocationId = LocationId,
+            CarId = newSession.CarId
+        };
+
+        if (network != null && !network.HaveAccount)
+        {
+            session.ThroughNetworkId = newSession.ThroughNetworkId;
+        }
+
+        await _chargeLogService.AddSessioonAsync(session);
 
         newSession = new SessionView();
     }

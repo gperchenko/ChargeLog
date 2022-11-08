@@ -7,7 +7,7 @@ namespace ChargeLog.ViewModels
         
         public string Date { get; set; } = DateTime.Now.ToShortDateString();
         public string? Duration { get; set; }
-        public string? Kwh { get; set; }
+        public string? Kw { get; set; }
         public string? Price { get; set; }
         public string? Discount { get; set; }
         public ChargeType ChargeType { get; set; }

@@ -101,5 +101,10 @@ namespace ChargeLog.Services
         {            
             return _chargeLogContext.Networks.FirstOrDefaultAsync(n => n.Id == networkId); ;
         }
+
+        public Task<List<Network>> GetNetworksPartnerWithAccount()
+        {
+            return _chargeLogContext.Networks.Where(n => n.IsPartner && n.HaveAccount).ToListAsync();
+        }
     }
 }
