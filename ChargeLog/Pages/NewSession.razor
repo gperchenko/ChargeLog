@@ -17,7 +17,7 @@
         </div>
         <div class="col-1">
             <label for="kwh">kWh</label>
-            <InputText id="kwh" @bind-Value="newSession.Kw" class="form-control" @onblur="() => UpdatePrice()" />
+            <InputText id="kwh" @bind-Value="newSession.KWh" class="form-control" @onblur="() => UpdatePrice()" />
         </div>
         <div class="col-1">
             <label for="price">Price</label>
@@ -103,10 +103,10 @@
     {
         if (network != null && network.Rate > 0)
         {
-            double kw;
-            double.TryParse(newSession.Kw, out kw);
+            double kWh;
+            double.TryParse(newSession.KWh, out kWh);
 
-            newSession.Price = (kw * network.Rate).ToString();
+            newSession.Price = (kWh * network.Rate).ToString();
         }
     }
 
@@ -117,9 +117,9 @@
 
     private async Task AddSession()
     {
-        double kw = 0, price = 0, discount = 0;
+        double kWh = 0, price = 0, discount = 0;
 
-        double.TryParse(newSession.Kw, out kw);
+        double.TryParse(newSession.KWh, out kWh);
         double.TryParse(newSession.Price, out price);
         double.TryParse(newSession.Discount, out discount);
 
@@ -136,7 +136,7 @@
         {
             Date = DateTime.Parse(newSession.Date),
             Duration = TimeSpan.Parse(newSession.Duration),
-            Kw = kw,
+            KWh = kWh,
             Price = price,
             Discount = discount,
             ChargeType = newSession.ChargeType,

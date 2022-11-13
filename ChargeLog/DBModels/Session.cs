@@ -7,7 +7,7 @@ namespace ChargeLog.DBModels
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Duration { get; set; }
-        public double Kw { get; set; }
+        public double KWh { get; set; }
         public double Price { get; set; }
         public double Discount { get; set; }
         public ChargeType ChargeType { get; set; }
