@@ -135,7 +135,7 @@
         var session = new Session()
         {
             Date = DateTime.Parse(newSession.Date),
-            Duration = TimeSpan.Parse(newSession.Duration),
+            Duration = TimeSpan.Parse(newSession.Duration ?? "00:00"),
             KWh = kWh,
             Price = price,
             Discount = discount,

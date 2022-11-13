@@ -30,12 +30,13 @@ namespace ChargeLog.Services
                 {
                     return new DashboardMainTableRow()
                     {
-                        Month = "Totals",
-                        ProviderCount = 5,
+                        NetworkCount = 5,
                         LocationCount = 7,
-                        Kw = 200.70,
+                        SessionCount = 5,
+                        KWh = 200.70,
                         Duration = TimeSpan.FromMinutes(2000),
-                        TotalAmount = "$400.00"
+                        Price = 400.00,
+                        Discount = 200
                     };
                 });
         }
@@ -47,13 +48,14 @@ namespace ChargeLog.Services
 
             return new DashboardMainTableRow()
             {
-                Month = currentDate.ToString("MMMM"),
-                Year = currentDate.ToString("yyyy"),
-                ProviderCount = 3,
+                Date = currentDate,
+                NetworkCount = 3,
                 LocationCount = 4,
-                Kw = 50.35,
+                SessionCount = 5,
+                KWh = 50.35,
                 Duration = TimeSpan.FromMinutes(200),
-                TotalAmount = "$60.00"
+                Price = 60.00,
+                Discount = 30
             };
         }
 
