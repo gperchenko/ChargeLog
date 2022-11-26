@@ -6,5 +6,6 @@
 
         public int MonthGroupSize { get; set; }
         public string? TimeSpanFormat { get; set; }
+        public string? DateFormat { get; set; }
     }
 }

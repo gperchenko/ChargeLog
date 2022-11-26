@@ -1,8 +1,19 @@
 ﻿@inject IChargeLogService _chargeService
 
 <div class="padding-left-5 location-list-body">
-<NewLocation NetworkId="1"></NewLocation>
-    <hr />
+
+    @if (!_newFormVisible)
+    {
+        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">New Location</button>
+    }
+    else
+    {
+        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">Hide Form</button>
+        <br/><br/>
+
+        <NewLocation NetworkId="1"></NewLocation>
+        <hr />
+    }
 
     <table class="table">
         <thead>
@@ -46,6 +57,7 @@
 @code {
     private List<LocationListItem> _locationList = new List<LocationListItem>();
     private InterfaceConfig _config = new InterfaceConfig();
+    private bool _newFormVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,5 +68,10 @@
     private void ShowDetails(LocationListItem location)
     {
         location.DisplayDetails = !location.DisplayDetails;
+    }
+
+    private void TuggleVisibleForm()
+    {
+        _newFormVisible = !_newFormVisible;
     }
 }
