@@ -1,5 +1,60 @@
-﻿<NewLocation NetworkId="1"></NewLocation>
+﻿@inject IChargeLogService _chargeService
 
+<div class="padding-left-5 location-list-body">
+<NewLocation NetworkId="1"></NewLocation>
+    <hr />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Address</th>
+                <th>Session Count</th>
+                <th>kWh</th>
+                <th>Duration</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var location in _locationList)
+            {
+                <tr @onclick="()=> ShowDetails(location)" class=@(location.DisplayDetails ? "session-list-header" : "")>
+                    <td scope="row">@location.Name</td>
+                    <td scope="row">@location.Address</td>
+                    <td scope="row">@location.SessionCount</td>
+                    <td scope="row">@location.KWh</td>
+                    <td scope="row">@location.Duration.ToString(_config.TimeSpanFormat)</td>
+                    <td scope="row">@location.Price.ToString("C")</td>
+                    <td scope="row">@location.Discount.ToString("C")</td>
+                    <td scope="row">@((location.Price - location.Discount).ToString("C"))</td>
+                </tr>
+
+                @if (location.DisplayDetails)
+                {
+                    <tr>
+                        <td colspan="8" class="td-body">
+                            <SessionList></SessionList>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
 @code {
+    private List<LocationListItem> _locationList = new List<LocationListItem>();
+    private InterfaceConfig _config = new InterfaceConfig();
 
+    protected override async Task OnInitializedAsync()
+    {
+        _locationList = await _chargeService.GetLocationListAsync();
+        _config = _chargeService.GetConfig();
+    }
+
+    private void ShowDetails(LocationListItem location)
+    {
+        location.DisplayDetails = !location.DisplayDetails;
+    }
 }

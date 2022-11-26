@@ -33,7 +33,7 @@ else
 
                @if (idx == 0)   // format totals 
                {
-                    <tr @onclick="()=> ShowDetails(idx1)" >
+                    <tr @onclick="()=> ShowDetails(idx1)" class=@(_tableRows[idx].DisplayDetails ? "network-list-header" : "")>
                         <th scope="row">Totals</th>
                         <th scope="row">@_tableRows[idx].NetworkCount</th>
                         <th scope="row">@_tableRows[idx].LocationCount</th>
@@ -44,17 +44,10 @@ else
                         <th scope="row">@_tableRows[idx].Discount.ToString("C")</th>
                         <th scope="row">@((_tableRows[idx].Price - _tableRows[idx].Discount).ToString("C"))</th>
                     </tr>
-
-                    @if(_tableRows[idx].DisplayDetails)
-                    {
-                        <tr>
-                            <td colspan="9"><NetworkList></NetworkList></td>
-                        </tr>
-                    }
                }
                else             // line 
                {
-                    <tr @onclick="()=> ShowDetails(idx1)" class=@(_tableRows[idx].DisplayDetails ? "table-info" : "")>
+                    <tr @onclick="()=> ShowDetails(idx1)" class=@(_tableRows[idx].DisplayDetails ? "network-list-header" : "")>
                         <td scope="row">@_tableRows[idx].Title</td>
                         <td scope="row">@_tableRows[idx].NetworkCount</td>
                         <td scope="row">@_tableRows[idx].LocationCount</td>
@@ -64,15 +57,17 @@ else
                         <td scope="row">@_tableRows[idx].Price.ToString("C")</td>
                         <td scope="row">@_tableRows[idx].Discount.ToString("C")</td>
                         <td scope="row">@((_tableRows[idx].Price - _tableRows[idx].Discount).ToString("C"))</td>
-                    </tr>
-
-                    @if(_tableRows[idx].DisplayDetails)
-                    {
-                        <tr>
-                            <td colspan="9"><NetworkList></NetworkList></td>
-                        </tr>
-                    }
+                    </tr>                   
                }
+
+                @if (_tableRows[idx].DisplayDetails)
+                {
+                    <tr>
+                        <td colspan="9" class="td-body">
+                            <NetworkList></NetworkList>
+                        </td>
+                    </tr>
+                }
                
             }
         </tbody>

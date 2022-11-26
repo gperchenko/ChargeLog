@@ -2,8 +2,8 @@
 {
     public class NetworkListItem : DashboardBase
     {
-        public int NetworkId { get; set; }
-        public string? NetworkName { get; set; }
-        public int LocationCount { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public int Count { get; set; }
     }
 }

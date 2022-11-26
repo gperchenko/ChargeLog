@@ -1,5 +1,51 @@
-﻿<NewSession NetworkId="1" LocationId="1"></NewSession>
+﻿@inject IChargeLogService _chargeService
+
+<div class="padding-left-5 session-list-body">
+    <NewSession NetworkId="1" LocationId="1"></NewSession>
+
+    <hr />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>kWh</th>
+                <th>Duration</th>
+                <th>Charge Type</th>
+                <th>Car</th>
+                <th>Through Network</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in _sessionList)
+            {
+                <tr>
+                    <td scope="row">@session.Date</td>
+                    <td scope="row">@session.KWh</td>
+                    <td scope="row">@session.Duration.ToString(_config.TimeSpanFormat)</td>
+                    <td scope="row">@session.ChargeType</td>
+                    <td scope="row">@session.Car</td>
+                    <td scope="row">@session.ThroughNetwork</td>
+                    <td scope="row">@session.Price.ToString("C")</td>
+                    <td scope="row">@session.Discount.ToString("C")</td>
+                    <td scope="row">@((session.Price - session.Discount).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
 
 @code {
+    private List<SessionListItem> _sessionList = new List<SessionListItem>();
+    private InterfaceConfig _config = new InterfaceConfig();
 
+    protected override async Task OnInitializedAsync()
+    {
+        _sessionList = await _chargeService.GetSessionListAsync();
+        _config = _chargeService.GetConfig();
+    }
 }

@@ -1,9 +1,9 @@
 ﻿@inject IChargeLogService _chargeService
 
-<div style="margin-left: 20px; background-color: #d6d6c2">
+<div class="padding-left-5 network-list-body">
 <NewNetwork></NewNetwork>
 
-<hr></hr>
+<hr />
 
 <table class="table">
     <thead>
@@ -21,28 +21,29 @@
     <tbody>
         @foreach (var network in _networkList)
         {
-            <tr @onclick="()=> ShowDetails(network)" class=@(network.DisplayDetails ? "table-info" : "")>
-                <td scope="row">@network.NetworkName</td>
-                <td scope="row">@network.LocationCount</td>
+            <tr @onclick="()=> ShowDetails(network)" class=@(network.DisplayDetails ? "location-list-header" : "")>
+                <td scope="row">@network.Name</td>
+                <td scope="row">@network.Count</td>
                 <td scope="row">@network.SessionCount</td>
                 <td scope="row">@network.KWh</td>
                 <td scope="row">@network.Duration.ToString(_config.TimeSpanFormat)</td>
                 <td scope="row">@network.Price.ToString("C")</td>
                 <td scope="row">@network.Discount.ToString("C")</td>
                 <td scope="row">@((network.Price - network.Discount).ToString("C"))</td>
-             </tr>
+            </tr>
 
             @if (network.DisplayDetails)
             {
                 <tr>
-                    <td colspan="6"><LocationList></LocationList></td>
+                        <td colspan="8" class="td-body">
+                        <LocationList></LocationList>
+                    </td>
                 </tr>
             }
         }
     </tbody>
 </table>
 
-<hr />
 </div>
 
 @code {

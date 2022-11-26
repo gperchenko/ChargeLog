@@ -65,9 +65,9 @@ namespace ChargeLog.Services
             {
                 new NetworkListItem()
                 {
-                    NetworkName = "Network Name",
-                    NetworkId = 1,
-                    LocationCount = 7,
+                    Name = "Network Name",
+                    Id = 1,
+                    Count = 7,
                     SessionCount = 5,
                     KWh = 200.70,
                     Duration = TimeSpan.FromMinutes(2000),
@@ -76,9 +76,9 @@ namespace ChargeLog.Services
                 },
                 new NetworkListItem()
                 {
-                    NetworkName = "Network Name 2",
-                    NetworkId = 2,
-                    LocationCount = 7,
+                    Name = "Network Name 2",
+                    Id = 2,
+                    Count = 7,
                     SessionCount = 5,
                     KWh = 200.70,
                     Duration = TimeSpan.FromMinutes(2000),
@@ -102,9 +102,9 @@ namespace ChargeLog.Services
             {
                 new LocationListItem()
                 {
-                    LocationName = "Location Name",
-                    LocationId = 1,
-                    LocationAddress = "Location Address",
+                    Name = "Location Name",
+                    Id = 1,
+                    Address = "Location Address",
                     SessionCount = 5,
                     KWh = 200.70,
                     Duration = TimeSpan.FromMinutes(2000),
@@ -113,9 +113,9 @@ namespace ChargeLog.Services
                 },
                 new LocationListItem()
                 {
-                    LocationName = "Network Name 2",
-                    LocationId = 2,
-                    LocationAddress = "Location Address 2",
+                    Name = "Network Name 2",
+                    Id = 2,
+                    Address = "Location Address 2",
                     SessionCount = 5,
                     KWh = 200.70,
                     Duration = TimeSpan.FromMinutes(2000),
