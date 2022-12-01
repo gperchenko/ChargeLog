@@ -5,7 +5,7 @@ namespace ChargeLog.Services
 {
     public interface IChargeLogService
     {
-        Task<DashboardMainTableRow> GetTotals();
+        Task<DashboardMainTableRow> GetTotalsAsync();
         DashboardMainTableRow GetMonth(int monthOffset);
         Task<List<NetworkListItem>> GetNetworkListAsync();
         Task<List<LocationListItem>> GetLocationListAsync();

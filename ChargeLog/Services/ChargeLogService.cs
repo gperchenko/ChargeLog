@@ -2,6 +2,7 @@
 using ChargeLog.DBModels;
 using ChargeLog.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ChargeLog.Services
 {
@@ -24,21 +25,28 @@ namespace ChargeLog.Services
             return interfaceConfig;
         }
 
-        public Task<DashboardMainTableRow> GetTotals()
+        public async Task<DashboardMainTableRow> GetTotalsAsync()
         {
-            return Task.Run(() =>
-                {
-                    return new DashboardMainTableRow()
-                    {
-                        NetworkCount = 5,
-                        LocationCount = 7,
-                        SessionCount = 5,
-                        KWh = 200.70,
-                        Duration = TimeSpan.FromMinutes(2000),
-                        Price = 400.00,
-                        Discount = 200
-                    };
-                });
+            var networks = await _chargeLogContext.Networks
+                .Include(n => n.Locations)
+                .ThenInclude(l => l.Sessions).ToListAsync();
+
+            var locationList = networks.SelectMany(n => n.Locations).ToList();
+            var sessionList = locationList.SelectMany(l => l.Sessions).ToList();
+
+            var result = new DashboardMainTableRow()
+            {
+                NetworkCount = networks.Count,
+                LocationCount = locationList.Count,
+                SessionCount = sessionList.Count,
+                KWh = sessionList.Sum(s => s.KWh),
+                Duration = TimeSpan.FromMinutes(0),
+                Price = sessionList.Sum(s => s.Price),
+                Discount = sessionList.Sum(s => s.Discount),
+
+            };
+
+            return result;
         }
 
         public DashboardMainTableRow GetMonth(int monthOffset)

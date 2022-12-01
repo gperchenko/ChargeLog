@@ -84,7 +84,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var totalsRow =  await _chargeService.GetTotals();
+        var totalsRow =  await _chargeService.GetTotalsAsync();
         _config = _chargeService.GetConfig();
 
         _tableRows.Add(totalsRow);
