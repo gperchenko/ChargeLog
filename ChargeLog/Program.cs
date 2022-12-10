@@ -1,4 +1,5 @@
 using ChargeLog.Context;
+using ChargeLog.Models;
 using ChargeLog.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<ChargeLogContext>(
     opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ChargeLogConnection"))
     .EnableSensitiveDataLogging());
 builder.Services.AddTransient<IChargeLogService, ChargeLogService>();
+builder.Services.AddSingleton<AppState>();
 
 var app = builder.Build();
 

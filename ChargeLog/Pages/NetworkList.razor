@@ -1,12 +1,16 @@
 ﻿@inject IChargeLogService _chargeService
+@inject AppState _appState
 
+@implements IDisposable
 
+<div class="padding-left-5 network-list-item-header">
+    <h5 class="margin-bottom-0">Network Details</h5>
+</div>
 
 <div class="padding-left-5 network-list-body">
 
-    @if (!_newFormVisible)
-    {
-      
+    @if (!_thisItem.ShowForm)
+    {      
         <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">New Network</button>
     }
     else
@@ -34,9 +38,9 @@
     <tbody>
         @foreach (var network in _networkList)
         {
-            <tr @onclick="()=> ShowDetails(network)" class=@(network.DisplayDetails ? "location-list-header" : "")>
+                <tr @onclick="()=> TuggleShowDetails(network.Id)" class=@(IsShowDetails(network.Id) ? "location-list-item-open" : "")>
                 <td scope="row">@network.Name</td>
-                <td scope="row">@network.Count</td>
+                <td scope="row">@network.LocationCount</td>
                 <td scope="row">@network.SessionCount</td>
                 <td scope="row">@network.KWh</td>
                 <td scope="row">@network.Duration.ToString(_config.TimeSpanFormat)</td>
@@ -45,10 +49,10 @@
                 <td scope="row">@((network.Price - network.Discount).ToString("C"))</td>
             </tr>
 
-            @if (network.DisplayDetails)
+            @if (IsShowDetails(network.Id))
             {
                 <tr>
-                        <td colspan="8" class="td-body">
+                    <td colspan="8" class="td-body">
                         <LocationList></LocationList>
                     </td>
                 </tr>
@@ -60,23 +64,58 @@
 </div>
 
 @code {
+    [Parameter]
+    public int DashboardIdx { get; set; }
+
     private List<NetworkListItem> _networkList = new List<NetworkListItem>();
     private InterfaceConfig _config = new InterfaceConfig();
-    private bool _newFormVisible = false;
+    private OpenItem _thisItem = new();
 
     protected override async Task OnInitializedAsync()
     {
         _networkList = await _chargeService.GetNetworkListAsync();
         _config = _chargeService.GetConfig();
+        _thisItem = _appState.OpenItems[DashboardIdx];
+        _thisItem.OnChange += ReloadNetworkList;
     }
 
-    private void ShowDetails(NetworkListItem network)
+    private void TuggleShowDetails(int id)
     {
-        network.DisplayDetails = !network.DisplayDetails;
+        if (_thisItem.ChildItems == null)
+        {
+            _thisItem.ChildItems = new();
+        }
+
+        if (_thisItem.ChildItems.ContainsKey(id))
+        {
+            _thisItem.ChildItems.Remove(id);
+        }
+        else
+        {
+            _thisItem.ChildItems.Add(id, new OpenItem());
+        }
+    }
+
+    private bool IsShowDetails(int idx)
+    {
+        if (_thisItem.ChildItems== null) return false;
+
+        return _thisItem.ChildItems.ContainsKey(idx);
     }
 
     private void TuggleVisibleForm()
     {
-        _newFormVisible = !_newFormVisible;
+        _thisItem.ShowForm = !_thisItem.ShowForm;
+    }
+
+    private async void ReloadNetworkList()
+    {
+        _networkList = await _chargeService.GetNetworkListAsync();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _thisItem.OnChange -= ReloadNetworkList;
     }
 }

@@ -28,6 +28,7 @@ namespace ChargeLog.Services
         public async Task<DashboardMainTableRow> GetTotalsAsync()
         {
             var networks = await _chargeLogContext.Networks
+                .AsNoTracking()
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
@@ -67,41 +68,34 @@ namespace ChargeLog.Services
             };
         }
 
-        public Task<List<NetworkListItem>> GetNetworkListAsync()
+        public async Task<List<NetworkListItem>> GetNetworkListAsync()
         {
-            var networkList = new List<NetworkListItem>()
+            var networkList = new List<NetworkListItem>();
+
+            var networks = await _chargeLogContext.Networks
+                .AsNoTracking()
+                .Include(n => n.Locations)
+                .ThenInclude(l => l.Sessions).ToListAsync();
+
+            foreach(var network in networks)
             {
-                new NetworkListItem()
+                var netwoorkIten = new NetworkListItem()
                 {
-                    Name = "Network Name",
-                    Id = 1,
-                    Count = 7,
-                    SessionCount = 5,
-                    KWh = 200.70,
-                    Duration = TimeSpan.FromMinutes(2000),
-                    Price = 400.00,
-                    Discount = 200
-                },
-                new NetworkListItem()
-                {
-                    Name = "Network Name 2",
-                    Id = 2,
-                    Count = 7,
-                    SessionCount = 5,
-                    KWh = 200.70,
-                    Duration = TimeSpan.FromMinutes(2000),
-                    Price = 400.00,
-                    Discount = 200
-                }
+                    Id = network.Id,
+                    Name = network.Name,
+                    LocationCount = network.Locations.Count,
+                    SessionCount = 0,
+                    KWh = 0,
+                    Duration = TimeSpan.FromMinutes(0),
+                    Price = 0,
+                    Discount = 0
+                };
 
+                networkList.Add(netwoorkIten);
+            }
 
-            };
-
-
-            return Task.Run(() =>
-            {
-                return networkList;
-            });
+            return networkList;
+            
         }
 
         public Task<List<LocationListItem>> GetLocationListAsync()

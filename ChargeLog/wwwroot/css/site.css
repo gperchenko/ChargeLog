@@ -67,15 +67,24 @@ a, .btn-link {
     padding-left: 5px;
 }
 
-.network-list-header {
-    background-color: #b8af94;
+.margin-bottom-0 {
+    margin-bottom: 0px;
+}
+
+.network-list-item-open {
+    background-color: #999966;
+}
+
+.network-list-item-header {
+    background-color: #adad85;
+    text-align: center
 }
 
 .network-list-body {
     background-color: #d6d6c2;
 }
 
-.location-list-header {
+.location-list-item-open {
     background-color: #b8a694;
 }
 

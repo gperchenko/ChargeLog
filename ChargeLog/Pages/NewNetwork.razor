@@ -1,4 +1,5 @@
 ﻿@inject IChargeLogService _chargeLogService
+@inject AppState _appState
 
 <h4>New Network</h4>
 
@@ -54,6 +55,7 @@
             };
 
         await _chargeLogService.AddNetworkAsync(provider);
+        _appState.NotifyStateChanged();
 
         newNetworkView = new NetworkView();
     }
