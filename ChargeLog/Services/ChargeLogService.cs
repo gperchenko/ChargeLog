@@ -98,41 +98,33 @@ namespace ChargeLog.Services
             
         }
 
-        public Task<List<LocationListItem>> GetLocationListAsync()
+        public async Task<List<LocationListItem>> GetLocationListAsync(int networkId)
         {
-            var locationList = new List<LocationListItem>()
+            var locationList = new List<LocationListItem>();
+
+            var locations = await _chargeLogContext.Locations
+                .AsNoTracking()
+                .Where (l => l.NetworkId == networkId)
+                .Include(l => l.Sessions).ToListAsync();
+
+            foreach(var location in locations)
             {
-                new LocationListItem()
+                var locationItem = new LocationListItem()
                 {
-                    Name = "Location Name",
-                    Id = 1,
-                    Address = "Location Address",
-                    SessionCount = 5,
-                    KWh = 200.70,
-                    Duration = TimeSpan.FromMinutes(2000),
-                    Price = 400.00,
-                    Discount = 200
-                },
-                new LocationListItem()
-                {
-                    Name = "Network Name 2",
-                    Id = 2,
-                    Address = "Location Address 2",
-                    SessionCount = 5,
-                    KWh = 200.70,
-                    Duration = TimeSpan.FromMinutes(2000),
-                    Price = 400.00,
-                    Discount = 200
-                }
+                    Name = location.Name,
+                    Id = location.Id,
+                    Address = location.Address,
+                    SessionCount = location.Sessions.Count,
+                    KWh = 0,
+                    Duration = TimeSpan.FromMinutes(0),
+                    Price = 0,
+                    Discount = 0
+                };
 
+                locationList.Add(locationItem);
+            }
 
-            };
-
-
-            return Task.Run(() =>
-            {
-                return locationList;
-            });
+            return locationList;
         }
 
         public Task<List<SessionListItem>> GetSessionListAsync()
@@ -162,6 +154,7 @@ namespace ChargeLog.Services
                     ThroughNetwork = "ChargePoint"
                 }
             };
+
 
             return Task.Run(() =>
             {

@@ -1,4 +1,4 @@
-﻿@inject IChargeLogService _chargeLogService
+﻿@inherits PageBase
 
 <h4>New Location</h4>
 
@@ -20,26 +20,3 @@
         </div>
     </div>
 </EditForm>
-
-@code {
-    [Parameter]
-    public int NetworkId { get; set; }
-
-    private LocationView newLocation = new LocationView();
-
-    private async Task AddLocation()
-    {
-        var location = new Location()
-            {
-                Name = newLocation.Name,
-                Address = newLocation.Address,
-                NetworkId = NetworkId
-            };
-
-       
-         await _chargeLogService.AddLocationAsync(location);
-        
-
-        newLocation = new LocationView();
-    }
-}

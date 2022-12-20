@@ -85,7 +85,12 @@ a, .btn-link {
 }
 
 .location-list-item-open {
-    background-color: #b8a694;
+    background-color: #998066;
+}
+
+.location-list-item-header {
+    background-color: #ad9a85;
+    text-align: center
 }
 
 .location-list-body {

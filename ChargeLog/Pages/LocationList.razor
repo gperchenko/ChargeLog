@@ -1,17 +1,23 @@
-﻿@inject IChargeLogService _chargeService
+﻿@inherits PageBase
+
+@implements IDisposable
+
+<div class="padding-left-5 location-list-item-header">
+    <h5 class="margin-bottom-0">Location Details</h5>
+</div>
 
 <div class="padding-left-5 location-list-body">
 
-    @if (!_newFormVisible)
+    @if (!State.ShowForm)
     {
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">New Location</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">New Location</button>
     }
     else
     {
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">Hide Form</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">Hide Form</button>
         <br/><br/>
 
-        <NewLocation NetworkId="1"></NewLocation>
+        <NewLocation NetworkId="@NetworkId"></NewLocation>
         <hr />
     }
 
@@ -31,12 +37,12 @@
         <tbody>
             @foreach (var location in _locationList)
             {
-                <tr @onclick="()=> ShowDetails(location)" class=@(location.DisplayDetails ? "session-list-header" : "")>
+                <tr @onclick="()=> TuggleShowDetails(State, location.Id)" class=@(IsShowDetails(State, location.Id) ? "session-list-header" : "")>
                     <td scope="row">@location.Name</td>
                     <td scope="row">@location.Address</td>
                     <td scope="row">@location.SessionCount</td>
                     <td scope="row">@location.KWh</td>
-                    <td scope="row">@location.Duration.ToString(_config.TimeSpanFormat)</td>
+                    <td scope="row">@location.Duration.ToString(Config.TimeSpanFormat)</td>
                     <td scope="row">@location.Price.ToString("C")</td>
                     <td scope="row">@location.Discount.ToString("C")</td>
                     <td scope="row">@((location.Price - location.Discount).ToString("C"))</td>
@@ -54,24 +60,4 @@
         </tbody>
     </table>
 </div>
-@code {
-    private List<LocationListItem> _locationList = new List<LocationListItem>();
-    private InterfaceConfig _config = new InterfaceConfig();
-    private bool _newFormVisible = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _locationList = await _chargeService.GetLocationListAsync();
-        _config = _chargeService.GetConfig();
-    }
-
-    private void ShowDetails(LocationListItem location)
-    {
-        location.DisplayDetails = !location.DisplayDetails;
-    }
-
-    private void TuggleVisibleForm()
-    {
-        _newFormVisible = !_newFormVisible;
-    }
-}

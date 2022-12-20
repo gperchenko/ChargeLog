@@ -8,7 +8,7 @@ namespace ChargeLog.Services
         Task<DashboardMainTableRow> GetTotalsAsync();
         DashboardMainTableRow GetMonth(int monthOffset);
         Task<List<NetworkListItem>> GetNetworkListAsync();
-        Task<List<LocationListItem>> GetLocationListAsync();
+        Task<List<LocationListItem>> GetLocationListAsync(int networkId);
         Task<List<SessionListItem>> GetSessionListAsync();
         InterfaceConfig GetConfig();
         Task<List<Car>> GetCarsAsync();

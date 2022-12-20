@@ -10,7 +10,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddDbContext<ChargeLogContext>(
     opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ChargeLogConnection"))
-    .EnableSensitiveDataLogging());
+    .EnableSensitiveDataLogging()
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking),
+    ServiceLifetime.Transient);
 builder.Services.AddTransient<IChargeLogService, ChargeLogService>();
 builder.Services.AddSingleton<AppState>();
 

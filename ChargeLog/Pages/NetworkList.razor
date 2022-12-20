@@ -1,5 +1,4 @@
-﻿@inject IChargeLogService _chargeService
-@inject AppState _appState
+﻿@inherits PageBase
 
 @implements IDisposable
 
@@ -9,13 +8,13 @@
 
 <div class="padding-left-5 network-list-body">
 
-    @if (!_thisItem.ShowForm)
+    @if (!State.ShowForm)
     {      
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">New Network</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">New Network</button>
     }
     else
     {
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">Hide Form</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">Hide Form</button>
         <br/><br/>
         <NewNetwork></NewNetwork>
         
@@ -38,22 +37,22 @@
     <tbody>
         @foreach (var network in _networkList)
         {
-                <tr @onclick="()=> TuggleShowDetails(network.Id)" class=@(IsShowDetails(network.Id) ? "location-list-item-open" : "")>
+                <tr @onclick="()=> TuggleShowDetails(State, network.Id)" class=@(IsShowDetails(State, network.Id) ? "location-list-item-open" : "")>
                 <td scope="row">@network.Name</td>
                 <td scope="row">@network.LocationCount</td>
                 <td scope="row">@network.SessionCount</td>
                 <td scope="row">@network.KWh</td>
-                <td scope="row">@network.Duration.ToString(_config.TimeSpanFormat)</td>
+                <td scope="row">@network.Duration.ToString(Config.TimeSpanFormat)</td>
                 <td scope="row">@network.Price.ToString("C")</td>
                 <td scope="row">@network.Discount.ToString("C")</td>
                 <td scope="row">@((network.Price - network.Discount).ToString("C"))</td>
             </tr>
 
-            @if (IsShowDetails(network.Id))
+            @if (IsShowDetails(State, network.Id))
             {
                 <tr>
                     <td colspan="8" class="td-body">
-                        <LocationList></LocationList>
+                        <LocationList DashboardIdx="@DashboardIdx" NetworkId="@network.Id"></LocationList>
                     </td>
                 </tr>
             }
@@ -62,60 +61,3 @@
 </table>
 
 </div>
-
-@code {
-    [Parameter]
-    public int DashboardIdx { get; set; }
-
-    private List<NetworkListItem> _networkList = new List<NetworkListItem>();
-    private InterfaceConfig _config = new InterfaceConfig();
-    private OpenItem _thisItem = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        _networkList = await _chargeService.GetNetworkListAsync();
-        _config = _chargeService.GetConfig();
-        _thisItem = _appState.OpenItems[DashboardIdx];
-        _thisItem.OnChange += ReloadNetworkList;
-    }
-
-    private void TuggleShowDetails(int id)
-    {
-        if (_thisItem.ChildItems == null)
-        {
-            _thisItem.ChildItems = new();
-        }
-
-        if (_thisItem.ChildItems.ContainsKey(id))
-        {
-            _thisItem.ChildItems.Remove(id);
-        }
-        else
-        {
-            _thisItem.ChildItems.Add(id, new OpenItem());
-        }
-    }
-
-    private bool IsShowDetails(int idx)
-    {
-        if (_thisItem.ChildItems== null) return false;
-
-        return _thisItem.ChildItems.ContainsKey(idx);
-    }
-
-    private void TuggleVisibleForm()
-    {
-        _thisItem.ShowForm = !_thisItem.ShowForm;
-    }
-
-    private async void ReloadNetworkList()
-    {
-        _networkList = await _chargeService.GetNetworkListAsync();
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        _thisItem.OnChange -= ReloadNetworkList;
-    }
-}

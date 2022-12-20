@@ -1,9 +1,6 @@
 ﻿@page "/"
 
-@inject IChargeLogService _chargeService
-@inject AppState _appState
-
-@implements IDisposable
+@inherits PageBase
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -36,13 +33,13 @@ else
 
                @if (idx == 0)   // format totals 
                {
-                    <tr @onclick="()=> TuggleShowDetails(idx1)" class=@(IsShowDetails(idx) ? "network-list-item-open" : "")>
+                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "network-list-item-open" : "")>
                         <th scope="row">Totals</th>
                         <th scope="row">@_tableRows[idx].NetworkCount</th>
                         <th scope="row">@_tableRows[idx].LocationCount</th>
                         <th scope="row">@_tableRows[idx].SessionCount</th>
                         <th scope="row">@_tableRows[idx].KWh</th>
-                        <th scope="row">@_tableRows[idx].Duration.ToString(_config.TimeSpanFormat)</th>
+                        <th scope="row">@_tableRows[idx].Duration.ToString(Config.TimeSpanFormat)</th>
                         <th scope="row">@_tableRows[idx].Price.ToString("C")</th>
                         <th scope="row">@_tableRows[idx].Discount.ToString("C")</th>
                         <th scope="row">@((_tableRows[idx].Price - _tableRows[idx].Discount).ToString("C"))</th>
@@ -50,20 +47,20 @@ else
                }
                else             // line 
                {
-                    <tr @onclick="()=> TuggleShowDetails(idx1)" class=@(IsShowDetails(idx) ? "network-list-item-open" : "")>
+                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "network-list-item-open" : "")>
                         <td scope="row">@_tableRows[idx].Title</td>
                         <td scope="row">@_tableRows[idx].NetworkCount</td>
                         <td scope="row">@_tableRows[idx].LocationCount</td>
                         <td scope="row">@_tableRows[idx].SessionCount</td>
                         <td scope="row">@_tableRows[idx].KWh</td>
-                        <td scope="row">@_tableRows[idx].Duration.ToString(_config.TimeSpanFormat)</td>
+                        <td scope="row">@_tableRows[idx].Duration.ToString(Config.TimeSpanFormat)</td>
                         <td scope="row">@_tableRows[idx].Price.ToString("C")</td>
                         <td scope="row">@_tableRows[idx].Discount.ToString("C")</td>
                         <td scope="row">@((_tableRows[idx].Price - _tableRows[idx].Discount).ToString("C"))</td>
                     </tr>                   
                }
 
-                @if (IsShowDetails(idx))
+                @if (IsShowDetails(State, idx))
                 {
                     <tr>
                         <td colspan="9" class="td-body">
@@ -78,95 +75,4 @@ else
 
     <button class="btn" @onclick="AddMonthGroup">Previous Month</button>
    
-}
-
-@code {
-    private int _itemsDisplayedMax;
-    private int _itemsDisplayed;
-    private int _currentMonth;
-    private List<DashboardMainTableRow> _tableRows = new List<DashboardMainTableRow>();
-    private InterfaceConfig _config = new InterfaceConfig();
-
-    protected override async Task OnInitializedAsync()
-    {
-        _appState.OnChange += ReloadDashboard;
-        var totalsRow =  await _chargeService.GetTotalsAsync();
-        _config = _chargeService.GetConfig();
-        _itemsDisplayedMax = _config.MonthGroupSize;
-
-        _tableRows.Add(totalsRow);
-        LoadMonths();
-
-    }
-
-    private void AddMonthGroup()
-    {
-        _itemsDisplayedMax += _config.MonthGroupSize;
-        LoadMonths();
-    }
-
-    private void LoadMonths()
-    {
-        while (_itemsDisplayed < _itemsDisplayedMax)
-        {
-            var monthRow = _chargeService.GetMonth(_currentMonth);    
-            _tableRows.Add(monthRow);
-            _currentMonth--;
-            _itemsDisplayed++;
-        }       
-    }
-
-    private async void ReloadDashboard()
-    {
-        var totalsRow = await _chargeService.GetTotalsAsync();
-        _tableRows.Clear();
-        _tableRows.Add(totalsRow);
-        _currentMonth = 0;
-        _itemsDisplayed = 0;
-        LoadMonths();
-        if (_appState.OpenItems != null)
-        {
-            ReloadChildren(_appState.OpenItems);
-        }
-        StateHasChanged();
-    }
-
-    private void ReloadChildren(Dictionary<int, OpenItem> childrenList)
-    {
-        foreach(var childEntry in childrenList)
-        {
-            var child = childEntry.Value;
-
-            child.NotifyStateChanged();
-        }
-    }
-
-    private void TuggleShowDetails(int idx)
-    {
-        if (_appState.OpenItems == null)
-        {
-            _appState.OpenItems = new();            
-        }
-
-        if (_appState.OpenItems.ContainsKey(idx))
-        {
-            _appState.OpenItems.Remove(idx);
-        }
-        else
-        {
-            _appState.OpenItems.Add(idx, new OpenItem());
-        }
-    }
-
-    private bool IsShowDetails(int idx)
-    {
-        if (_appState.OpenItems == null) return false;
-
-        return _appState.OpenItems.ContainsKey(idx);
-    }
-
-    public void Dispose()
-    {
-        _appState.OnChange -= ReloadDashboard;
-    }
 }

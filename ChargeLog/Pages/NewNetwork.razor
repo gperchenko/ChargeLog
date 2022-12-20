@@ -1,5 +1,4 @@
-﻿@inject IChargeLogService _chargeLogService
-@inject AppState _appState
+﻿@inherits PageBase
 
 <h4>New Network</h4>
 
@@ -35,28 +34,3 @@
         </div>
      </div>
 </EditForm>
-
-@code {
-    private NetworkView newNetworkView = new NetworkView();
-
-    private async Task AddNetwork()
-    {
-        Double rate = 0;
-
-        Double.TryParse(newNetworkView.Rate, out rate);
-
-        var provider = new Network()
-            {
-                Name = newNetworkView.Name,
-                Rate = rate,
-                DefaultChargeType = newNetworkView.DefaultChargeType,
-                HaveAccount = newNetworkView.HaveAccount,
-                IsPartner = newNetworkView.IsPartner
-            };
-
-        await _chargeLogService.AddNetworkAsync(provider);
-        _appState.NotifyStateChanged();
-
-        newNetworkView = new NetworkView();
-    }
-}
