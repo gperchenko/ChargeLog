@@ -1,14 +1,14 @@
-﻿@inject IChargeLogService _chargeService
+﻿@inherits PageBase
 
 <div class="padding-left-5 session-list-body">
 
-    @if (!_newFormVisible)
+    @if (!State.ShowForm)
     {
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">New Session</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">New Session</button>
     }
     else
     {
-        <button @onclick="()=> TuggleVisibleForm()" type="button" class="btn btn-light">Hide Form</button>
+        <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">Hide Form</button>
         <br/><br/>
 
         <NewSession NetworkId="1" LocationId="1"></NewSession>
@@ -33,9 +33,9 @@
             @foreach (var session in _sessionList)
             {
                 <tr>
-                    <td scope="row">@session.Date.ToString(_config.DateFormat)</td>
+                    <td scope="row">@session.Date.ToString(Config.DateFormat)</td>
                     <td scope="row">@session.KWh</td>
-                    <td scope="row">@session.Duration.ToString(_config.TimeSpanFormat)</td>
+                    <td scope="row">@session.Duration.ToString(Config.TimeSpanFormat)</td>
                     <td scope="row">@session.ChargeType</td>
                     <td scope="row">@session.Car</td>
                     <td scope="row">@session.ThroughNetwork</td>
@@ -49,19 +49,3 @@
 
 </div>
 
-@code {
-    private List<SessionListItem> _sessionList = new List<SessionListItem>();
-    private InterfaceConfig _config = new InterfaceConfig();
-    private bool _newFormVisible = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _sessionList = await _chargeService.GetSessionListAsync();
-        _config = _chargeService.GetConfig();
-    }
-
-    private void TuggleVisibleForm()
-    {
-        _newFormVisible = !_newFormVisible;
-    }
-}

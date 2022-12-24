@@ -28,7 +28,6 @@ namespace ChargeLog.Services
         public async Task<DashboardMainTableRow> GetTotalsAsync()
         {
             var networks = await _chargeLogContext.Networks
-                .AsNoTracking()
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
@@ -73,7 +72,6 @@ namespace ChargeLog.Services
             var networkList = new List<NetworkListItem>();
 
             var networks = await _chargeLogContext.Networks
-                .AsNoTracking()
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
@@ -103,7 +101,6 @@ namespace ChargeLog.Services
             var locationList = new List<LocationListItem>();
 
             var locations = await _chargeLogContext.Locations
-                .AsNoTracking()
                 .Where (l => l.NetworkId == networkId)
                 .Include(l => l.Sessions).ToListAsync();
 
@@ -127,39 +124,31 @@ namespace ChargeLog.Services
             return locationList;
         }
 
-        public Task<List<SessionListItem>> GetSessionListAsync()
+        public async Task<List<SessionListItem>> GetSessionListAsync(int locationId)
         {
-            var sessionList = new List<SessionListItem>()
+            var sessionList = new List<SessionListItem>();
+
+            var sessions = await _chargeLogContext.Sessions
+                .Where(s => s.LocationId == locationId).ToListAsync();
+
+            foreach(var session in sessions)
             {
-                new SessionListItem()
+                var SessionListItem = new SessionListItem()
                 {
-                    Date = DateTime.Now,
-                    Duration = TimeSpan.Parse("01:20"),
-                    KWh = 25.6,
-                    Price = 10,
-                    Discount = 0,
-                    ChargeType = "AC",
+                    Date = session.Date,
+                    Duration = session.Duration,
+                    KWh = session.KWh,
+                    Price = session.Price,
+                    Discount = session.Discount,
+                    ChargeType = session.ChargeType.ToString(),
                     Car = "Kia",
                     ThroughNetwork = ""
-                },
-                new SessionListItem()
-                {
-                    Date = DateTime.Now.AddDays(-5),
-                    Duration = TimeSpan.Parse("00:30"),
-                    KWh = 25.6,
-                    Price = 10,
-                    Discount = 10,
-                    ChargeType = "AC",
-                    Car = "Kia",
-                    ThroughNetwork = "ChargePoint"
-                }
-            };
+                };
 
+                sessionList.Add(SessionListItem);
+            }
 
-            return Task.Run(() =>
-            {
-                return sessionList;
-            });
+             return sessionList;           
         }
 
         public Task<List<Car>> GetCarsAsync()

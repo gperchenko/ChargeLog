@@ -53,7 +53,7 @@ namespace ChargeLog.Pages
             StateHasChanged();
         }
 
-        private async void ReloadChildren(Dictionary<int, LevelState> childrenList)
+        private void ReloadChildren(Dictionary<int, LevelState> childrenList)
         {
             foreach (var childEntry in childrenList)
             {

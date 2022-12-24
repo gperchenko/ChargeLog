@@ -48,11 +48,12 @@
                     <td scope="row">@((location.Price - location.Discount).ToString("C"))</td>
                 </tr>
 
-                @if (location.DisplayDetails)
+                @if (IsShowDetails(State, location.Id))
                 {
                     <tr>
                         <td colspan="8" class="td-body">
-                            <SessionList></SessionList>
+                            <SessionList DashboardIdx="@DashboardIdx" 
+                                NetworkId="@NetworkId" LocationId="@location.Id"></SessionList>
                         </td>
                     </tr>
                 }

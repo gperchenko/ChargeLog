@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ChargeLog.Pages
 {
-    public partial class LocationList
+    public partial class LocationList : IDisposable
     {
         [Parameter]
         public int DashboardIdx { get; set; }
@@ -16,8 +16,8 @@ namespace ChargeLog.Pages
        
         protected override async Task OnInitializedAsync()
         {
-            _networkState = AppState.DashboardState.OpenItems[DashboardIdx];
-            State = _networkState.OpenItems[NetworkId];
+            _networkState = AppState.DashboardState.OpenItems![DashboardIdx];
+            State = _networkState.OpenItems![NetworkId];
             State.OnChange += ReloadLocationList;
             _locationList = await ChargeLogService.GetLocationListAsync(NetworkId);
             Config = ChargeLogService.GetConfig();            
