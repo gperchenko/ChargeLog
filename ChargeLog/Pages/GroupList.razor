@@ -1,6 +1,6 @@
 ﻿@page "/GroupList"
 
-@inject IChargeLogService _chargeLogService
+@inherits PageBase
 
 <h1>Group List</h1>
 
@@ -29,7 +29,15 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Name</th>           
+                <th>Network Count</th>
+                <th>Location Count</th>
+                <th>Session Count</th>
+                <th>kWh</th>
+                <th>Duration</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -37,32 +45,16 @@ else
             {
                 <tr>
                     <td>@group.Name</td>
+                    <td scope="row">@group.NetworkCount</td>
+                    <td scope="row">@group.LocationCount</td>
+                    <td scope="row">@group.SessionCount</td>
+                    <td scope="row">@group.KWh</td>
+                    <td scope="row">@group.Duration.ToString(Config.TimeSpanFormat)</td>
+                    <td scope="row">@group.Price.ToString("C")</td>
+                    <td scope="row">@group.Discount.ToString("C")</td>
+                    <td scope="row">@((group.Price - group.Discount).ToString("C"))</td>
                 </tr>
             }
         </tbody>
     </table>
-}
-
-@code {
-    private List<Group> groups = new List<Group>();
-    private GroupView newGroup = new GroupView();
-
-    protected override async Task OnInitializedAsync()
-    {
-        groups = await _chargeLogService.GetGroupsAsync();
-    }
-
-    private async Task AddGroup()
-    {
-        var group = new Group()
-        {
-            Name = newGroup.Name
-        };
-        
-        await _chargeLogService.AddGroupAsync(group);
-
-        groups = await _chargeLogService.GetGroupsAsync();
-
-        newGroup = new GroupView();
-    }
 }

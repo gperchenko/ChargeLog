@@ -1,6 +1,7 @@
 ﻿using ChargeLog.Context;
 using ChargeLog.DBModels;
 using ChargeLog.Models;
+using ChargeLog.Pages;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -162,9 +163,30 @@ namespace ChargeLog.Services
             await _chargeLogContext.SaveChangesAsync();
         }
 
-        public Task<List<Group>> GetGroupsAsync()
+        public async Task<List<GroupListItem>> GetGroupsAsync()
         {
-            return _chargeLogContext.Groups.ToListAsync();
+            var groupItemList = new List<GroupListItem>();
+
+            var groups = await _chargeLogContext.Groups.ToListAsync();
+
+            foreach (var group in groups)
+            {
+                var GroupListItem = new GroupListItem()
+                {
+                    Name= group.Name,
+                    NetworkCount = 0,
+                    LocationCount = 0,
+                    SessionCount = 0,
+                    KWh = 0,
+                    Duration = TimeSpan.FromMinutes(0),
+                    Price = 0,
+                    Discount = 0
+                };
+
+                groupItemList.Add(GroupListItem);
+            }
+
+            return groupItemList;
         }
 
         public async Task AddGroupAsync(Group group)
