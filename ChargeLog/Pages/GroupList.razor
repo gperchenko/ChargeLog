@@ -43,7 +43,7 @@ else
         <tbody>
             @foreach (var group in groups)
             {
-                <tr>
+                <tr @onclick="()=> TuggleShowDetails(State, group.Id)" class=@(IsShowDetails(State, group.Id) ? "group-list-item-open" : "")>
                     <td>@group.Name</td>
                     <td scope="row">@group.NetworkCount</td>
                     <td scope="row">@group.LocationCount</td>
@@ -54,6 +54,15 @@ else
                     <td scope="row">@group.Discount.ToString("C")</td>
                     <td scope="row">@((group.Price - group.Discount).ToString("C"))</td>
                 </tr>
+
+                @if (IsShowDetails(State, group.Id))
+                {
+                    <tr>
+                        <td colspan="9" class="td-body">
+                            <GroupSessionList ></GroupSessionList>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

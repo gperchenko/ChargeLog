@@ -1,5 +1,4 @@
-﻿using ChargeLog.DBModels;
-using ChargeLog.Models;
+﻿using ChargeLog.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace ChargeLog.Pages

@@ -173,6 +173,7 @@ namespace ChargeLog.Services
             {
                 var GroupListItem = new GroupListItem()
                 {
+                    Id= group.Id,
                     Name= group.Name,
                     NetworkCount = 0,
                     LocationCount = 0,
@@ -187,6 +188,22 @@ namespace ChargeLog.Services
             }
 
             return groupItemList;
+        }
+        
+        public List<SessionGroupListItem> GetSessionGroupList()
+        {
+            return new List<SessionGroupListItem>()
+                { new SessionGroupListItem()
+                    {
+                        Network = "Net1",
+                        Location = "Loc1"
+                    },
+                    new SessionGroupListItem()
+                    {
+                        Network = "Net2",
+                        Location = "Loc2"
+                    }
+                };
         }
 
         public async Task AddGroupAsync(Group group)

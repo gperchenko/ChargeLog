@@ -105,6 +105,18 @@ a, .btn-link {
     background-color: #e0d1d1;
 }
 
+.group-list-item-open {
+    background-color: #66998c;
+}
+
+.group-session-list-item-header {
+    background-color: #85ada3;
+    text-align: center
+}
+
+.group-session-list-body {
+    background-color: #d1e0dd;
+}
 
 .td-body {
     padding-top: 0px !important;

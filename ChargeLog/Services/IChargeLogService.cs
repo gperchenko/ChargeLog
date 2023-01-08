@@ -10,6 +10,7 @@ namespace ChargeLog.Services
         Task<List<NetworkListItem>> GetNetworkListAsync();
         Task<List<LocationListItem>> GetLocationListAsync(int networkId);
         Task<List<SessionListItem>> GetSessionListAsync(int locationId);
+        List<SessionGroupListItem> GetSessionGroupList();
         InterfaceConfig GetConfig();
         Task<List<Car>> GetCarsAsync();
         Task AddCarAsync(Car car);
