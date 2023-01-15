@@ -1,6 +1,44 @@
-﻿@page "/GroupSessionList"
+﻿@inherits PageBase
 
-@inherits PageBase
+<div class="padding-left-5 group-session-list-item-header">
+    <h5 class="margin-bottom-0">Location List</h5>
+</div>
 
-<h3>GroupSessionList</h3>
+<div class="padding-left-5 group-session-list-body">
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Network</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>kWh</th>
+                <th>Duration</th>
+                <th>Type</th>
+                <th>Car</th>
+                <th>Through</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in _sessionList)
+            {
+                <tr >
+                    <td scope="row">@session.Network</td>
+                    <td scope="row">@session.Location</td>
+                    <td scope="row">@session.Date.ToString(Config.DateFormat)</td>
+                    <td scope="row">@session.KWh</td>
+                    <td scope="row">@session.Duration.ToString(Config.TimeSpanFormat)</td>
+                    <td scope="row">@session.ChargeType</td>
+                    <td scope="row">@session.Car</td>
+                    <td scope="row">@session.ThroughNetwork</td>
+                    <td scope="row">@session.Price.ToString("C")</td>
+                    <td scope="row">@session.Discount.ToString("C")</td>
+                    <td scope="row">@((session.Price - session.Discount).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

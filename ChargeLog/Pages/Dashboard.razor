@@ -33,7 +33,7 @@ else
 
                @if (idx == 0)   // format totals 
                {
-                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "network-list-item-open" : "")>
+                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "dashboard-list-item-open" : "")>
                         <th scope="row">Totals</th>
                         <th scope="row">@_tableRows[idx].NetworkCount</th>
                         <th scope="row">@_tableRows[idx].LocationCount</th>
@@ -47,7 +47,7 @@ else
                }
                else             // line 
                {
-                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "network-list-item-open" : "")>
+                    <tr @onclick="()=> TuggleShowDetails(State, idx1)" class=@(IsShowDetails(State, idx) ? "dashboard-list-item-open" : "")>
                         <td scope="row">@_tableRows[idx].Title</td>
                         <td scope="row">@_tableRows[idx].NetworkCount</td>
                         <td scope="row">@_tableRows[idx].LocationCount</td>

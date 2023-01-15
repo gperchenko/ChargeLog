@@ -71,38 +71,56 @@ a, .btn-link {
     margin-bottom: 0px;
 }
 
-.network-list-item-open {
+.dashboard-list-item-open {
     background-color: #999966;
 }
 
-.network-list-item-header {
+.network-list-header {
     background-color: #adad85;
-    text-align: center
+    text-align: center;
 }
 
 .network-list-body {
     background-color: #d6d6c2;
 }
 
-.location-list-item-open {
+.network-list-item-open {
     background-color: #998066;
 }
 
-.location-list-item-header {
+.location-list-header {
     background-color: #ad9a85;
-    text-align: center
+    text-align: center;
 }
 
 .location-list-body {
     background-color: #e0d9d1;
 }
 
+.location-list-item-open {
+    background-color: #996666;
+}
+
 .session-list-header {
-    background-color: #b89494;
+    background-color: #ad8585;
+    text-align: center;
 }
 
 .session-list-body {
     background-color: #e0d1d1;
+}
+
+.session-list-item-open {
+    background-color: #bf6040;
+}
+
+.session-group-mgr-header {
+    background-color: #cc8066;
+    text-align: center;
+}
+
+.session-group-mgr-body {
+    background-color: #eccfc6;
 }
 
 .group-list-item-open {

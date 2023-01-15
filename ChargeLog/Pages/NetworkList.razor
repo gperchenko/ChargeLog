@@ -1,9 +1,7 @@
 ﻿@inherits PageBase
 
-@implements IDisposable
-
-<div class="padding-left-5 network-list-item-header">
-    <h5 class="margin-bottom-0">Network Details</h5>
+<div class="padding-left-5 network-list-header">
+    <h5 class="margin-bottom-0">Network List</h5>
 </div>
 
 <div class="padding-left-5 network-list-body">
@@ -37,7 +35,7 @@
     <tbody>
         @foreach (var network in _networkList)
         {
-                <tr @onclick="()=> TuggleShowDetails(State, network.Id)" class=@(IsShowDetails(State, network.Id) ? "location-list-item-open" : "")>
+                <tr @onclick="()=> TuggleShowDetails(State, network.Id)" class=@(IsShowDetails(State, network.Id) ? "network-list-item-open" : "")>
                 <td scope="row">@network.Name</td>
                 <td scope="row">@network.LocationCount</td>
                 <td scope="row">@network.SessionCount</td>

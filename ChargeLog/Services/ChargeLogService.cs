@@ -136,6 +136,7 @@ namespace ChargeLog.Services
             {
                 var SessionListItem = new SessionListItem()
                 {
+                    Id = session.Id,
                     Date = session.Date,
                     Duration = session.Duration,
                     KWh = session.KWh,
@@ -196,12 +197,16 @@ namespace ChargeLog.Services
                 { new SessionGroupListItem()
                     {
                         Network = "Net1",
-                        Location = "Loc1"
+                        Location = "Loc1",
+                        ChargeType = ChargeType.DC.ToString(),
+                        Car = "Kia"
                     },
                     new SessionGroupListItem()
                     {
                         Network = "Net2",
-                        Location = "Loc2"
+                        Location = "Loc2",
+                        ChargeType = ChargeType.AC.ToString(),
+                        Car = "Kia"
                     }
                 };
         }

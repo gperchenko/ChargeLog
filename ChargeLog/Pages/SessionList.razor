@@ -1,5 +1,9 @@
 ﻿@inherits PageBase
 
+<div class="padding-left-5 session-list-header">
+    <h5 class="margin-bottom-0">Session List</h5>
+</div>
+
 <div class="padding-left-5 session-list-body">
 
     @if (!State.ShowForm)
@@ -32,7 +36,7 @@
         <tbody>
             @foreach (var session in _sessionList)
             {
-                <tr>
+                <tr @onclick="()=> TuggleShowDetails(State, session.Id)" class=@(IsShowDetails(State, session.Id) ? "session-list-item-open" : "")>
                     <td scope="row">@session.Date.ToString(Config.DateFormat)</td>
                     <td scope="row">@session.KWh</td>
                     <td scope="row">@session.Duration.ToString(Config.TimeSpanFormat)</td>
@@ -43,6 +47,15 @@
                     <td scope="row">@session.Discount.ToString("C")</td>
                     <td scope="row">@((session.Price - session.Discount).ToString("C"))</td>
                 </tr>
+
+                @if (IsShowDetails(State, session.Id))
+                {
+                    <tr>
+                        <td colspan="9" class="td-body">
+                            <SessionGroupMgr></SessionGroupMgr>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
