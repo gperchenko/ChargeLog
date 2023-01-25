@@ -164,7 +164,7 @@ namespace ChargeLog.Services
             await _chargeLogContext.SaveChangesAsync();
         }
 
-        public async Task<List<GroupListItem>> GetGroupsAsync()
+        public async Task<List<GroupListItem>> GetGroupsTotalsAsync()
         {
             var groupItemList = new List<GroupListItem>();
 
@@ -191,7 +191,7 @@ namespace ChargeLog.Services
             return groupItemList;
         }
         
-        public List<SessionGroupListItem> GetSessionGroupList()
+        public List<SessionGroupListItem> GetSessionsByGroupList()
         {
             return new List<SessionGroupListItem>()
                 { new SessionGroupListItem()
@@ -243,6 +243,34 @@ namespace ChargeLog.Services
         public Task<List<Network>> GetNetworksPartnerWithAccount()
         {
             return _chargeLogContext.Networks.Where(n => n.IsPartner && n.HaveAccount).ToListAsync();
+        }
+
+        public List<KeyValue> GetGroupsBySession()
+        {
+            return new List<KeyValue>
+            {
+                new KeyValue() {Key = 1, Value = "Group 1" }
+            };
+        }
+
+        public void AddGroupToSession()
+        {
+            
+        }
+
+        public void RemoveGroupFromSession()
+        {
+           
+        }
+
+        public List<KeyValue> GetAllGroups()
+        {
+            return new List<KeyValue>
+            {
+                new KeyValue() {Key = 1, Value = "Group 1" },
+                new KeyValue() {Key = 2, Value = "Group 2" },
+                new KeyValue() {Key = 3, Value = "Group 3"}
+            };
         }
     }
 }

@@ -71,6 +71,22 @@ a, .btn-link {
     margin-bottom: 0px;
 }
 
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
+}
+
+.margin-10 {
+    margin: 10px;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
 .dashboard-list-item-open {
     background-color: #999966;
 }
@@ -129,11 +145,15 @@ a, .btn-link {
 
 .group-session-list-item-header {
     background-color: #85ada3;
-    text-align: center
+    text-align: center;
 }
 
 .group-session-list-body {
     background-color: #d1e0dd;
+}
+
+.group-mgr-btn {
+    width: 120px;
 }
 
 .td-body {
@@ -141,6 +161,8 @@ a, .btn-link {
     padding-right: 0px !important;
     padding-bottom: 0px !important;
 }
+
+
 
 
 

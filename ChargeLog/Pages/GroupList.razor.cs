@@ -11,7 +11,7 @@ namespace ChargeLog.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            groups = await ChargeLogService.GetGroupsAsync();
+            groups = await ChargeLogService.GetGroupsTotalsAsync();
             Config = ChargeLogService.GetConfig();
         }
 
@@ -24,7 +24,7 @@ namespace ChargeLog.Pages
 
             await ChargeLogService.AddGroupAsync(group);
 
-            groups = await ChargeLogService.GetGroupsAsync();
+            groups = await ChargeLogService.GetGroupsTotalsAsync();
 
             newGroup = new GroupView();
         }

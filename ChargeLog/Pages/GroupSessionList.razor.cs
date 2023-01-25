@@ -9,7 +9,7 @@ namespace ChargeLog.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            _sessionList = ChargeLogService.GetSessionGroupList();
+            _sessionList = ChargeLogService.GetSessionsByGroupList();
             Config = ChargeLogService.GetConfig();
         }
     }

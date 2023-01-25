@@ -1,2 +1,47 @@
-﻿<h3>SessionGroupMgr</h3>
+﻿@inherits PageBase
+
+<div class="padding-left-5 session-group-mgr-header">
+    <h5 class="margin-bottom-0">Manage Groups</h5>
+</div>
+
+<div class="padding-left-5 container session-group-mgr-body">
+    <div class="row">
+        <div class="col margin-10">
+            Available Groups:
+            <select @bind="SelectedAvailableGroups" multiple class="form-select form-select-sm">
+
+                @foreach(var group in AvailableGroups)
+                {
+                    <option value="@group.Key">@group.Value</option>
+                }
+            </select>
+        </div>
+        <div class="col margin-10">
+            &nbsp;
+            <div class="container text-align-center">
+                <div class="row margin-bottom-5" >
+                    <div class="col">
+                        <button disabled="@AddDisabled()" @onclick="() => AddNewGroups()" type="button" class="btn btn-light group-mgr-btn">Add  &gt;&gt;</button>
+                    </div>
+                </div>
+                       
+                <div class="row margin-top-5" >
+                    <div class="col">
+                        <button disabled="@RemoveDisabled()" @onclick="() => RemoveGroups()" type="button" class="btn btn-light group-mgr-btn">&lt;&lt; Remove</button>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div class="col margin-10" >
+            Current Groups
+            <select @bind="SelectedIncludedGroups" multiple class="form-select form-select-sm">
+                @foreach (var group in IncludedGroups)
+                {
+                    <option value="@group.Key">@group.Value</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
 
