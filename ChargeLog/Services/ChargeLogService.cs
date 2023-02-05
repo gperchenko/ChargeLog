@@ -1,9 +1,8 @@
 ﻿using ChargeLog.Context;
 using ChargeLog.DBModels;
 using ChargeLog.Models;
-using ChargeLog.Pages;
+using ChargeLog.ExtentionMethodes;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ChargeLog.Services
 {
@@ -44,7 +43,6 @@ namespace ChargeLog.Services
                 Duration = TimeSpan.FromMinutes(0),
                 Price = sessionList.Sum(s => s.Price),
                 Discount = sessionList.Sum(s => s.Discount),
-
             };
 
             return result;
@@ -70,28 +68,21 @@ namespace ChargeLog.Services
 
         public async Task<List<NetworkListItem>> GetNetworkListAsync()
         {
-            var networkList = new List<NetworkListItem>();
-
-            var networks = await _chargeLogContext.Networks
+           var networks = await _chargeLogContext.Networks
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
-            foreach(var network in networks)
+            var networkList = networks.Select(n => new NetworkListItem()
             {
-                var netwoorkIten = new NetworkListItem()
-                {
-                    Id = network.Id,
-                    Name = network.Name,
-                    LocationCount = network.Locations.Count,
-                    SessionCount = 0,
-                    KWh = 0,
-                    Duration = TimeSpan.FromMinutes(0),
-                    Price = 0,
-                    Discount = 0
-                };
-
-                networkList.Add(netwoorkIten);
-            }
+                Id = n.Id,
+                Name = n.Name,
+                LocationCount = n.Locations.Count,
+                SessionCount = n.Locations.SelectMany(l => l.Sessions).Count(),
+                KWh = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.KWh),
+                Duration = n.Locations.SelectMany(l => l.Sessions).DurationSum(),
+                Price = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.Price),
+                Discount = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.Discount),
+            }).ToList();
 
             return networkList;
             
@@ -99,56 +90,45 @@ namespace ChargeLog.Services
 
         public async Task<List<LocationListItem>> GetLocationListAsync(int networkId)
         {
-            var locationList = new List<LocationListItem>();
-
             var locations = await _chargeLogContext.Locations
                 .Where (l => l.NetworkId == networkId)
                 .Include(l => l.Sessions).ToListAsync();
 
-            foreach(var location in locations)
+            var locationList = locations.Select(l => new LocationListItem()
             {
-                var locationItem = new LocationListItem()
-                {
-                    Name = location.Name,
-                    Id = location.Id,
-                    Address = location.Address,
-                    SessionCount = location.Sessions.Count,
-                    KWh = 0,
-                    Duration = TimeSpan.FromMinutes(0),
-                    Price = 0,
-                    Discount = 0
-                };
-
-                locationList.Add(locationItem);
-            }
+                Name = l.Name,
+                Id = l.Id,
+                Address = l.Address,
+                SessionCount = l.Sessions.Count,
+                KWh = l.Sessions.Sum(s => s.KWh),
+                Duration = l.Sessions.DurationSum(),
+                Price = l.Sessions.Sum(s => s.Price),
+                Discount = l.Sessions.Sum(s => s.Discount),
+            }).ToList();
 
             return locationList;
         }
 
         public async Task<List<SessionListItem>> GetSessionListAsync(int locationId)
         {
-            var sessionList = new List<SessionListItem>();
+            var sessions = await _chargeLogContext.Sessions                
+                .Where(s => s.LocationId == locationId)
+                .Include(s => s.Car)
+                .Include(s => s.ThroughNetwork)
+                .ToListAsync();
 
-            var sessions = await _chargeLogContext.Sessions
-                .Where(s => s.LocationId == locationId).ToListAsync();
-
-            foreach(var session in sessions)
+            var sessionList = sessions.Select(s => new SessionListItem()
             {
-                var SessionListItem = new SessionListItem()
-                {
-                    Id = session.Id,
-                    Date = session.Date,
-                    Duration = session.Duration,
-                    KWh = session.KWh,
-                    Price = session.Price,
-                    Discount = session.Discount,
-                    ChargeType = session.ChargeType.ToString(),
-                    Car = "Kia",
-                    ThroughNetwork = ""
-                };
-
-                sessionList.Add(SessionListItem);
-            }
+                Id = s.Id,
+                Date = s.Date,
+                Duration = s.Duration,
+                KWh = s.KWh,
+                Price = s.Price,
+                Discount = s.Discount,
+                ChargeType = s.ChargeType.ToString(),
+                Car = s.Car?.DisplayName,
+                ThroughNetwork = s.ThroughNetwork?.Name
+            }).ToList();
 
              return sessionList;           
         }
@@ -166,49 +146,62 @@ namespace ChargeLog.Services
 
         public async Task<List<GroupListItem>> GetGroupsTotalsAsync()
         {
-            var groupItemList = new List<GroupListItem>();
+            var groups = await _chargeLogContext.Groups
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.Location)
+                .ThenInclude(l => l.Network)
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.Car)
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.ThroughNetwork)
+                .ToListAsync();
 
-            var groups = await _chargeLogContext.Groups.ToListAsync();
-
-            foreach (var group in groups)
-            {
-                var GroupListItem = new GroupListItem()
-                {
-                    Id= group.Id,
-                    Name= group.Name,
-                    NetworkCount = 0,
-                    LocationCount = 0,
-                    SessionCount = 0,
-                    KWh = 0,
-                    Duration = TimeSpan.FromMinutes(0),
-                    Price = 0,
-                    Discount = 0
-                };
-
-                groupItemList.Add(GroupListItem);
-            }
+            var groupItemList = groups.Select(g => new GroupListItem() 
+                    {
+                        Id = g.Id,
+                        Name = g.Name,
+                        NetworkCount = g.Sessions.Select(s => s.Location?.Network?.Name).Distinct().Count(),
+                        LocationCount = g.Sessions.Select(s => s.Location?.Name).Distinct().Count(),
+                        SessionCount = g.Sessions.Count(),
+                        KWh = g.Sessions.Sum( s => s.KWh),
+                        Duration = g.Sessions.DurationSum(),
+                        Price = g.Sessions.Sum(s => s.Price),
+                        Discount = g.Sessions.Sum(s => s.Discount)
+                    }).ToList();
 
             return groupItemList;
         }
         
-        public List<SessionGroupListItem> GetSessionsByGroupList()
+        public async Task<List<SessionGroupListItem>> GetSessionsByGroupAsync(int groupId)
         {
-            return new List<SessionGroupListItem>()
-                { new SessionGroupListItem()
-                    {
-                        Network = "Net1",
-                        Location = "Loc1",
-                        ChargeType = ChargeType.DC.ToString(),
-                        Car = "Kia"
-                    },
-                    new SessionGroupListItem()
-                    {
-                        Network = "Net2",
-                        Location = "Loc2",
-                        ChargeType = ChargeType.AC.ToString(),
-                        Car = "Kia"
-                    }
-                };
+            var group = await _chargeLogContext.Groups
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.Location)
+                .ThenInclude(l => l.Network)
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.Car)
+                .Include(g => g.Sessions)
+                .ThenInclude(s => s.ThroughNetwork)
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+
+            var result = group.Sessions
+                .Select(s => new SessionGroupListItem()
+                {
+                    Network = s.Location?.Network?.Name,
+                    Location = s.Location?.Name,
+                    Id = s.Id,
+                    Date= s.Date,
+                    Duration= s.Duration,
+                    KWh = s.KWh,
+                    Price = s.Price,
+                    Discount = s.Discount,
+                    ChargeType = s.ChargeType.ToString(),
+                    Car = s.Car?.DisplayName,
+                    ThroughNetwork = s.ThroughNetwork?.Name
+
+                }).ToList();
+
+            return result;
         }
 
         public async Task AddGroupAsync(Group group)
@@ -245,32 +238,54 @@ namespace ChargeLog.Services
             return _chargeLogContext.Networks.Where(n => n.IsPartner && n.HaveAccount).ToListAsync();
         }
 
-        public List<KeyValue> GetGroupsBySession()
+        public async Task<List<KeyValue>> GetGroupsBySessionAsync(int sessionId)
         {
-            return new List<KeyValue>
-            {
-                new KeyValue() {Key = 1, Value = "Group 1" }
-            };
+            var session = await _chargeLogContext.Sessions
+                .Include(s => s.Groups)
+                .FirstOrDefaultAsync(s => s.Id == sessionId);
+            if (session == null || session.Groups == null) return new List<KeyValue>();
+
+            var result = session.Groups.Select(g => new KeyValue() { Key = g.Id, Value = g.Name}).ToList();
+            return result;
         }
 
-        public void AddGroupToSession()
+        public async Task AddGroupToSessionAsync(int sessionId, int groupId)
         {
-            
+            var session = await _chargeLogContext.Sessions
+                .Include(s => s.Groups)
+                .AsTracking()
+                .FirstOrDefaultAsync(s => s.Id == sessionId);
+            if (session == null) return;
+
+            var group = _chargeLogContext.Groups.FirstOrDefault(g => g.Id == groupId);
+            if (group == null) return;
+
+            if (session.Groups == null)
+                session.Groups = new List<Group>();
+
+            session.Groups.Add(group);
+            _chargeLogContext.SaveChanges();
+
         }
 
-        public void RemoveGroupFromSession()
+        public async Task RemoveGroupFromSessionAsync(int sessionId, int groupId )
         {
-           
+            var session = await _chargeLogContext.Sessions
+                .Include(s => s.Groups)
+                .AsTracking()
+                .FirstOrDefaultAsync(s => s.Id == sessionId);
+            if (session == null || session.Groups == null) return;
+
+            session.Groups.RemoveAll(g => g.Id == groupId);
+            _chargeLogContext.SaveChanges();
         }
 
-        public List<KeyValue> GetAllGroups()
+        public async Task<List<KeyValue>> GetAllGroupsAsync()
         {
-            return new List<KeyValue>
-            {
-                new KeyValue() {Key = 1, Value = "Group 1" },
-                new KeyValue() {Key = 2, Value = "Group 2" },
-                new KeyValue() {Key = 3, Value = "Group 3"}
-            };
+            var groups = await _chargeLogContext.Groups.ToListAsync();
+            var result = groups.Select(g => new KeyValue() { Key = g.Id, Value = g.Name}).ToList();
+
+            return result;
         }
     }
 }

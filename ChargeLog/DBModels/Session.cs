@@ -12,6 +12,7 @@ namespace ChargeLog.DBModels
         public double Discount { get; set; }
         public ChargeType ChargeType { get; set; }
         public int LocationId { get; set; }
+        public Location? Location { get; set; }
         public int CarId { get; set; }
         public Car? Car { get; set; }
         public int? ThroughNetworkId { get; set; }

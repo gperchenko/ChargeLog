@@ -10,11 +10,11 @@ namespace ChargeLog.Services
         Task<List<NetworkListItem>> GetNetworkListAsync();
         Task<List<LocationListItem>> GetLocationListAsync(int networkId);
         Task<List<SessionListItem>> GetSessionListAsync(int locationId);
-        List<SessionGroupListItem> GetSessionsByGroupList();
-        List<KeyValue> GetGroupsBySession();
-        void AddGroupToSession();
-        void RemoveGroupFromSession();
-        List<KeyValue> GetAllGroups();
+        Task<List<SessionGroupListItem>> GetSessionsByGroupAsync(int groupId);
+        Task<List<KeyValue>> GetGroupsBySessionAsync(int sessionId);
+        Task AddGroupToSessionAsync(int sessionId, int groupId);
+        Task RemoveGroupFromSessionAsync(int sessionId, int groupId);
+        Task<List<KeyValue>> GetAllGroupsAsync();
         InterfaceConfig GetConfig();
         Task<List<Car>> GetCarsAsync();
         Task AddCarAsync(Car car);

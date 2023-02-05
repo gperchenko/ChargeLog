@@ -15,7 +15,7 @@
         <button @onclick="()=> TuggleVisibleForm(State)" type="button" class="btn btn-light">Hide Form</button>
         <br/><br/>
 
-        <NewSession NetworkId="1" LocationId="1"></NewSession>
+        <NewSession NetworkId="NetworkId" LocationId="LocationId"></NewSession>
         <hr />
     }
 
@@ -52,7 +52,7 @@
                 {
                     <tr>
                         <td colspan="9" class="td-body">
-                            <SessionGroupMgr></SessionGroupMgr>
+                            <SessionGroupMgr SessionId="session.Id"></SessionGroupMgr>
                         </td>
                     </tr>
                 }
