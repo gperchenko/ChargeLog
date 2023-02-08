@@ -4,7 +4,7 @@ namespace ChargeLog.ExtentionMethodes
 {
     public static class FilterLocationsExtension
     {
-        public static IEnumerable<Location> FilterNetworks(this IEnumerable<Location> locations, int monthOffset)
+        public static IEnumerable<Location> FilterLocations(this IEnumerable<Location> locations, int monthOffset)
         {
             if (monthOffset > 0)
                 return locations;
@@ -13,8 +13,13 @@ namespace ChargeLog.ExtentionMethodes
 
             foreach (var location in locations)
             {
-                location.Sessions = null;
-                locationList.Add(location);
+                if (location.Sessions == null) continue;
+                var sessions = location.Sessions.FilterSessions(monthOffset);
+                if (sessions.Count() > 0)
+                {
+                    location.Sessions = sessions.ToList();
+                    locationList.Add(location);
+                }               
             }
 
             return locationList;

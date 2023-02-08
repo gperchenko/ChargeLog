@@ -25,22 +25,29 @@ namespace ChargeLog.Services
             return interfaceConfig;
         }
 
-        public async Task<DashboardMainTableRow> GetTotalsAsync()
+        public async Task<DashboardMainTableRow> GetTotalsAsync(int monthOffset = 1)
         {
             var networks = await _chargeLogContext.Networks
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
-            var locationList = networks.SelectMany(n => n.Locations).ToList();
+            var filteredNetworks = networks.FilterNetworks(monthOffset).ToList();
+
+            var currentDate = DateTime.Now;
+            currentDate = currentDate.AddMonths(monthOffset);
+
+            var locationList = filteredNetworks.SelectMany(n => n.Locations).ToList();
             var sessionList = locationList.SelectMany(l => l.Sessions).ToList();
 
             var result = new DashboardMainTableRow()
             {
-                NetworkCount = networks.Count,
+                Date = currentDate,
+                NetworkCount = filteredNetworks.Count,
                 LocationCount = locationList.Count,
+                MonthOffset= monthOffset,
                 SessionCount = sessionList.Count,
                 KWh = sessionList.Sum(s => s.KWh),
-                Duration = TimeSpan.FromMinutes(0),
+                Duration = sessionList.DurationSum(),
                 Price = sessionList.Sum(s => s.Price),
                 Discount = sessionList.Sum(s => s.Discount),
             };
@@ -48,31 +55,13 @@ namespace ChargeLog.Services
             return result;
         }
 
-        public DashboardMainTableRow GetMonth(int monthOffset)
-        {
-            var currentDate = DateTime.Now;
-            currentDate = currentDate.AddMonths(monthOffset);
-
-            return new DashboardMainTableRow()
-            {
-                Date = currentDate,
-                NetworkCount = 3,
-                LocationCount = 4,
-                SessionCount = 5,
-                KWh = 50.35,
-                Duration = TimeSpan.FromMinutes(200),
-                Price = 60.00,
-                Discount = 30
-            };
-        }
-
-        public async Task<List<NetworkListItem>> GetNetworkListAsync()
+        public async Task<List<NetworkListItem>> GetNetworkListAsync(int monthOffset)
         {
            var networks = await _chargeLogContext.Networks
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
-            var networkList = networks.Select(n => new NetworkListItem()
+            var networkList = networks.FilterNetworks(monthOffset).Select(n => new NetworkListItem()
             {
                 Id = n.Id,
                 Name = n.Name,
@@ -84,17 +73,16 @@ namespace ChargeLog.Services
                 Discount = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.Discount),
             }).ToList();
 
-            return networkList;
-            
+            return networkList;            
         }
 
-        public async Task<List<LocationListItem>> GetLocationListAsync(int networkId)
+        public async Task<List<LocationListItem>> GetLocationListAsync(int networkId, int monthOffset)
         {
             var locations = await _chargeLogContext.Locations
                 .Where (l => l.NetworkId == networkId)
                 .Include(l => l.Sessions).ToListAsync();
 
-            var locationList = locations.Select(l => new LocationListItem()
+            var locationList = locations.FilterLocations(monthOffset).Select(l => new LocationListItem()
             {
                 Name = l.Name,
                 Id = l.Id,
@@ -109,7 +97,7 @@ namespace ChargeLog.Services
             return locationList;
         }
 
-        public async Task<List<SessionListItem>> GetSessionListAsync(int locationId)
+        public async Task<List<SessionListItem>> GetSessionListAsync(int locationId, int monthOffset)
         {
             var sessions = await _chargeLogContext.Sessions                
                 .Where(s => s.LocationId == locationId)
@@ -117,7 +105,7 @@ namespace ChargeLog.Services
                 .Include(s => s.ThroughNetwork)
                 .ToListAsync();
 
-            var sessionList = sessions.Select(s => new SessionListItem()
+            var sessionList = sessions.FilterSessions(monthOffset).Select(s => new SessionListItem()
             {
                 Id = s.Id,
                 Date = s.Date,
@@ -130,7 +118,7 @@ namespace ChargeLog.Services
                 ThroughNetwork = s.ThroughNetwork?.Name
             }).ToList();
 
-             return sessionList;           
+             return sessionList.OrderByDescending(s => s.Date).ToList();           
         }
 
         public Task<List<Car>> GetCarsAsync()

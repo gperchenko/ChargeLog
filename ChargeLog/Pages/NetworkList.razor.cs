@@ -7,6 +7,8 @@ namespace ChargeLog.Pages
     {
         [Parameter]
         public int DashboardIdx { get; set; }
+        [Parameter]
+        public int MonthOffset { get; set; }
 
         private List<NetworkListItem> _networkList = new();
 
@@ -15,12 +17,12 @@ namespace ChargeLog.Pages
             State = AppState.DashboardState.OpenItems![DashboardIdx];
             State.OnChange += ReloadNetworkList;
             Config = ChargeLogService.GetConfig();
-            _networkList = await ChargeLogService.GetNetworkListAsync();            
+            _networkList = await ChargeLogService.GetNetworkListAsync(MonthOffset);            
         }
 
         private async void ReloadNetworkList()
         {
-            _networkList = await ChargeLogService.GetNetworkListAsync();
+            _networkList = await ChargeLogService.GetNetworkListAsync(MonthOffset);
             StateHasChanged();
         }
 

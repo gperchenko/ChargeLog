@@ -64,7 +64,7 @@ else
                 {
                     <tr>
                         <td colspan="9" class="td-body">
-                            <NetworkList DashboardIdx=@idx ></NetworkList>
+                            <NetworkList DashboardIdx="@idx" MonthOffset="@_tableRows[idx].MonthOffset"></NetworkList>
                         </td>
                     </tr>
                 }
@@ -73,6 +73,6 @@ else
         </tbody>
     </table>
 
-    <button class="btn" @onclick="AddMonthGroup">Previous Month</button>
+    <button class="btn" @onclick="AddMonthGroupAsync">Previous Month</button>
    
 }

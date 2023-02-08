@@ -10,6 +10,9 @@ namespace ChargeLog.Pages
 
         [Parameter]
         public int NetworkId { get; set; }
+       
+        [Parameter]
+        public int MonthOffset { get; set; }
 
         private List<LocationListItem> _locationList = new List<LocationListItem>();
         private LevelState _networkState = new();
@@ -19,13 +22,13 @@ namespace ChargeLog.Pages
             _networkState = AppState.DashboardState.OpenItems![DashboardIdx];
             State = _networkState.OpenItems![NetworkId];
             State.OnChange += ReloadLocationList;
-            _locationList = await ChargeLogService.GetLocationListAsync(NetworkId);
+            _locationList = await ChargeLogService.GetLocationListAsync(NetworkId, MonthOffset);
             Config = ChargeLogService.GetConfig();            
         }
 
         private async void ReloadLocationList()
         {
-            _locationList = await ChargeLogService.GetLocationListAsync(NetworkId);
+            _locationList = await ChargeLogService.GetLocationListAsync(NetworkId, MonthOffset);
             StateHasChanged();
         }
 

@@ -12,40 +12,40 @@ namespace ChargeLog.Pages
         protected override async Task OnInitializedAsync()
         {
             State = AppState.DashboardState;
-            State.OnChange += ReloadDashboard;
+            State.OnChange += ReloadDashboardAsync;
             Config = ChargeLogService.GetConfig();
             var totalsRow = await ChargeLogService.GetTotalsAsync();            
             _itemsDisplayedMax = Config.MonthGroupSize;
             _tableRows.Add(totalsRow);
-            LoadMonths();
+            await LoadMonthsAsync();
 
         }
 
-        private void AddMonthGroup()
+        private async Task AddMonthGroupAsync()
         {
             _itemsDisplayedMax += Config.MonthGroupSize;
-            LoadMonths();
+            await LoadMonthsAsync();
         }
 
-        private void LoadMonths()
+        private async Task LoadMonthsAsync()
         {
             while (_itemsDisplayed < _itemsDisplayedMax)
             {
-                var monthRow = ChargeLogService.GetMonth(_currentMonth);
+                var monthRow = await ChargeLogService.GetTotalsAsync(_currentMonth);
                 _tableRows.Add(monthRow);
                 _currentMonth--;
                 _itemsDisplayed++;
             }
         }
 
-        private async void ReloadDashboard()
+        private async void ReloadDashboardAsync()
         {
             var totalsRow =  await ChargeLogService.GetTotalsAsync();
             _tableRows.Clear();
             _tableRows.Add(totalsRow);
             _currentMonth = 0;
             _itemsDisplayed = 0;
-            LoadMonths();
+            await LoadMonthsAsync();
             if (State.OpenItems != null)
             {
                 ReloadChildren(State.OpenItems);
@@ -68,7 +68,7 @@ namespace ChargeLog.Pages
         }
         public void Dispose()
         {
-            State.OnChange -= ReloadDashboard;
+            State.OnChange -= ReloadDashboardAsync;
         }
     }
 }

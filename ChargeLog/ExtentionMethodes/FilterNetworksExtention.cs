@@ -13,8 +13,13 @@ namespace ChargeLog.ExtentionMethodes
 
             foreach (var network in networks)
             {
-                network.Locations = null;
-                networkList.Add(network);
+                if (network.Locations == null) continue;
+                var locations = network.Locations.FilterLocations(monthOffset);
+                if (locations.Count() > 0)
+                {
+                    network.Locations = locations.ToList();
+                    networkList.Add(network);
+                }              
             }
 
             return networkList;

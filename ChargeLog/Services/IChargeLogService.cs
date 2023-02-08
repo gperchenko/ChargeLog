@@ -5,11 +5,10 @@ namespace ChargeLog.Services
 {
     public interface IChargeLogService
     {
-        Task<DashboardMainTableRow> GetTotalsAsync();
-        DashboardMainTableRow GetMonth(int monthOffset);
-        Task<List<NetworkListItem>> GetNetworkListAsync();
-        Task<List<LocationListItem>> GetLocationListAsync(int networkId);
-        Task<List<SessionListItem>> GetSessionListAsync(int locationId);
+        Task<DashboardMainTableRow> GetTotalsAsync(int monthOffset=1);
+        Task<List<NetworkListItem>> GetNetworkListAsync(int monthOffset);
+        Task<List<LocationListItem>> GetLocationListAsync(int networkId, int monthOffset);
+        Task<List<SessionListItem>> GetSessionListAsync(int locationId, int monthOffset);
         Task<List<SessionGroupListItem>> GetSessionsByGroupAsync(int groupId);
         Task<List<KeyValue>> GetGroupsBySessionAsync(int sessionId);
         Task AddGroupToSessionAsync(int sessionId, int groupId);

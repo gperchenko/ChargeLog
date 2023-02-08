@@ -14,6 +14,9 @@ namespace ChargeLog.Pages
         [Parameter]
         public int LocationId { get; set; }
 
+        [Parameter]
+        public int MonthOffset { get; set; }
+
         private List<SessionListItem> _sessionList = new List<SessionListItem>();
         private LevelState _networkState = new();
         private LevelState _locationState = new();
@@ -23,20 +26,20 @@ namespace ChargeLog.Pages
             _networkState = AppState.DashboardState.OpenItems![DashboardIdx];
             _locationState = _networkState.OpenItems![NetworkId];
             State = _locationState.OpenItems![LocationId];
-            State.OnChange += ReloadSessionList;
-            _sessionList = await ChargeLogService.GetSessionListAsync(LocationId);
+            State.OnChange += ReloadSessionListAsync;
+            _sessionList = await ChargeLogService.GetSessionListAsync(LocationId, MonthOffset);
             Config = ChargeLogService.GetConfig();
         }
 
-        private async void ReloadSessionList()
+        private async void ReloadSessionListAsync()
         {
-            _sessionList = await ChargeLogService.GetSessionListAsync(LocationId);
+            _sessionList = await ChargeLogService.GetSessionListAsync(LocationId, MonthOffset);
             StateHasChanged();
         }
 
         public void Dispose()
         {
-            State.OnChange -= ReloadSessionList;
+            State.OnChange -= ReloadSessionListAsync;
         }
     }
 }
