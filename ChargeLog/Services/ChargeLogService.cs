@@ -46,7 +46,7 @@ namespace ChargeLog.Services
                 LocationCount = locationList.Count,
                 MonthOffset= monthOffset,
                 SessionCount = sessionList.Count,
-                KWh = sessionList.Sum(s => s.KWh),
+                KWh = Math.Round(sessionList.Sum(s => s.KWh), 3, MidpointRounding.AwayFromZero),
                 Duration = sessionList.DurationSum(),
                 Price = sessionList.Sum(s => s.Price),
                 Discount = sessionList.Sum(s => s.Discount),
@@ -61,13 +61,17 @@ namespace ChargeLog.Services
                 .Include(n => n.Locations)
                 .ThenInclude(l => l.Sessions).ToListAsync();
 
-            var networkList = networks.FilterNetworks(monthOffset).Select(n => new NetworkListItem()
+            var networkList = networks
+                .FilterNetworks(monthOffset)
+                .OrderByDescending(n => n.LastDate)
+                .Select(n => new NetworkListItem()
             {
                 Id = n.Id,
                 Name = n.Name,
                 LocationCount = n.Locations.Count,
                 SessionCount = n.Locations.SelectMany(l => l.Sessions).Count(),
-                KWh = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.KWh),
+                KWh = Math.Round(n.Locations
+                    .SelectMany(l => l.Sessions).Sum(s => s.KWh), 3, MidpointRounding.AwayFromZero),
                 Duration = n.Locations.SelectMany(l => l.Sessions).DurationSum(),
                 Price = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.Price),
                 Discount = n.Locations.SelectMany(l => l.Sessions).Sum(s => s.Discount),
@@ -82,13 +86,16 @@ namespace ChargeLog.Services
                 .Where (l => l.NetworkId == networkId)
                 .Include(l => l.Sessions).ToListAsync();
 
-            var locationList = locations.FilterLocations(monthOffset).Select(l => new LocationListItem()
+            var locationList = locations
+                .OrderByDescending (l => l.LastDate)
+                .FilterLocations(monthOffset)
+                .Select(l => new LocationListItem()
             {
                 Name = l.Name,
                 Id = l.Id,
                 Address = l.Address,
                 SessionCount = l.Sessions.Count,
-                KWh = l.Sessions.Sum(s => s.KWh),
+                KWh = Math.Round(l.Sessions.Sum(s => s.KWh), 3, MidpointRounding.AwayFromZero), 
                 Duration = l.Sessions.DurationSum(),
                 Price = l.Sessions.Sum(s => s.Price),
                 Discount = l.Sessions.Sum(s => s.Discount),
@@ -105,7 +112,10 @@ namespace ChargeLog.Services
                 .Include(s => s.ThroughNetwork)
                 .ToListAsync();
 
-            var sessionList = sessions.FilterSessions(monthOffset).Select(s => new SessionListItem()
+            var sessionList = sessions
+                .FilterSessions(monthOffset)
+                .OrderByDescending(s => s.Date)
+                .Select(s => new SessionListItem()
             {
                 Id = s.Id,
                 Date = s.Date,
@@ -118,7 +128,7 @@ namespace ChargeLog.Services
                 ThroughNetwork = s.ThroughNetwork?.Name
             }).ToList();
 
-             return sessionList.OrderByDescending(s => s.Date).ToList();           
+             return sessionList;           
         }
 
         public Task<List<Car>> GetCarsAsync()
@@ -144,7 +154,9 @@ namespace ChargeLog.Services
                 .ThenInclude(s => s.ThroughNetwork)
                 .ToListAsync();
 
-            var groupItemList = groups.Select(g => new GroupListItem() 
+            var groupItemList = groups
+                .OrderBy(g => g.Name)
+                .Select(g => new GroupListItem() 
                     {
                         Id = g.Id,
                         Name = g.Name,
@@ -173,6 +185,7 @@ namespace ChargeLog.Services
                 .FirstOrDefaultAsync(g => g.Id == groupId);
 
             var result = group.Sessions
+                .OrderByDescending(s => s.Date)
                 .Select(s => new SessionGroupListItem()
                 {
                     Network = s.Location?.Network?.Name,
@@ -233,7 +246,9 @@ namespace ChargeLog.Services
                 .FirstOrDefaultAsync(s => s.Id == sessionId);
             if (session == null || session.Groups == null) return new List<KeyValue>();
 
-            var result = session.Groups.Select(g => new KeyValue() { Key = g.Id, Value = g.Name}).ToList();
+            var result = session.Groups
+                .OrderBy(s => s.Name)
+                .Select(g => new KeyValue() { Key = g.Id, Value = g.Name}).ToList();
             return result;
         }
 

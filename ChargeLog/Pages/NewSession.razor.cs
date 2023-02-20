@@ -12,6 +12,9 @@ namespace ChargeLog.Pages
         [Parameter]
         public int LocationId { get; set; }
 
+        [Parameter]
+        public int MonthOffset { get; set; }
+
         private SessionView newSession = new SessionView();
         private Network? network;
         private List<Network> partnerNetworks = new List<Network>();
@@ -26,6 +29,15 @@ namespace ChargeLog.Pages
             if (network != null && !network.HaveAccount)
             {
                 partnerNetworks = await ChargeLogService.GetNetworksPartnerWithAccount();
+            }
+
+            // fix date if tthis is for dirrent month 
+
+            if (MonthOffset < 0)
+            {
+                var currentDate = DateTime.Now;
+                var newDate = currentDate.AddMonths(MonthOffset);
+                newSession.Date = new DateTime(newDate.Year, newDate.Month, 1).ToShortDateString();
             }
         }
 

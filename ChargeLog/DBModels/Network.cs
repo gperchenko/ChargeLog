@@ -1,4 +1,5 @@
 ﻿using ChargeLog.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ChargeLog.DBModels
 {
@@ -11,5 +12,14 @@ namespace ChargeLog.DBModels
         public bool IsPartner { get; set; }
         public ChargeType DefaultChargeType { get; set; }
         public List<Location> Locations { get; set; } = new List<Location>();
+
+        public DateTime LastDate
+        {
+            get
+            {
+                return Locations.Any() ?
+                    Locations.OrderByDescending(l => l.LastDate).First().LastDate : DateTime.MinValue;
+            }
+        }
     }
 }
