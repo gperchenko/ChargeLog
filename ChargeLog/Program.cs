@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ChargeLogContext>(
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking),
     ServiceLifetime.Transient);
 builder.Services.AddTransient<IChargeLogService, ChargeLogService>();
+builder.Services.AddTransient<IImp>
 builder.Services.AddSingleton<AppState>();
 
 var app = builder.Build();

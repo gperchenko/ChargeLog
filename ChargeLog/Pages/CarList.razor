@@ -1,6 +1,6 @@
 ﻿@page "/CarList"
 
-@inject IChargeLogService _chargeLogService
+@inherits PageBase
 
 <h1>Car List</h1>
 
@@ -53,30 +53,4 @@ else
             }
         </tbody>
     </table>
-}
-
-@code {
-    private List<Car> cars = new List<Car>();
-    private CarView newCar = new CarView();
-
-    protected override async Task OnInitializedAsync()
-    {
-        cars = await _chargeLogService.GetCarsAsync();
-    }
-
-    private async Task AddCar()
-    {
-        var car = new Car()
-        {
-            Year = newCar.Year,
-            Make = newCar.Make,
-            Model = newCar.Model
-        };
-        
-        await _chargeLogService.AddCarAsync(car);
-
-        cars = await _chargeLogService.GetCarsAsync();
-
-        newCar = new CarView();
-    }
 }

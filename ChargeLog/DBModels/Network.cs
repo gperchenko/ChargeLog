@@ -6,12 +6,14 @@ namespace ChargeLog.DBModels
     public class Network
     {
         public int Id { get; set; }
+        public DateTime CreateDate { get; set; } = DateTime.Now;
         public string? Name { get; set; }
         public Double Rate { get; set; }
         public bool HaveAccount { get; set; }  
         public bool IsPartner { get; set; }
         public ChargeType DefaultChargeType { get; set; }
         public List<Location> Locations { get; set; } = new List<Location>();
+        public int? ImportId { get; set; }
 
         public DateTime LastDate
         {

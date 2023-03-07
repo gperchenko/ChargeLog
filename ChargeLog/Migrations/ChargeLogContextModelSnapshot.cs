@@ -17,10 +17,10 @@ namespace ChargeLog.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("ChargeLog.DBModels.Car", b =>
                 {
@@ -28,7 +28,10 @@ namespace ChargeLog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Make")
                         .IsRequired()
@@ -56,7 +59,10 @@ namespace ChargeLog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -68,17 +74,53 @@ namespace ChargeLog.Migrations
                     b.ToTable("Group", (string)null);
                 });
 
+            modelBuilder.Entity("ChargeLog.DBModels.Import", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LocationCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NetworkCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Import", (string)null);
+                });
+
             modelBuilder.Entity("ChargeLog.DBModels.Location", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ImportId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -101,13 +143,19 @@ namespace ChargeLog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DefaultChargeType")
                         .HasColumnType("int");
 
                     b.Property<bool>("HaveAccount")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ImportId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsPartner")
                         .HasColumnType("bit");
@@ -131,13 +179,16 @@ namespace ChargeLog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CarId")
                         .HasColumnType("int");
 
                     b.Property<int>("ChargeType")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -147,6 +198,9 @@ namespace ChargeLog.Migrations
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
+
+                    b.Property<int?>("ImportId")
+                        .HasColumnType("int");
 
                     b.Property<double>("KWh")
                         .HasColumnType("float");
@@ -205,7 +259,7 @@ namespace ChargeLog.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ChargeLog.DBModels.Location", null)
+                    b.HasOne("ChargeLog.DBModels.Location", "Location")
                         .WithMany("Sessions")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,6 +270,8 @@ namespace ChargeLog.Migrations
                         .HasForeignKey("ThroughNetworkId");
 
                     b.Navigation("Car");
+
+                    b.Navigation("Location");
 
                     b.Navigation("ThroughNetwork");
                 });

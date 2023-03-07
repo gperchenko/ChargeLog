@@ -11,6 +11,7 @@ namespace ChargeLog.Context
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Import> Imports { get; set; }
 
         public ChargeLogContext(DbContextOptions<ChargeLogContext> options)
             : base(options)
@@ -27,7 +28,7 @@ namespace ChargeLog.Context
             .ToTable("Network");
 
             builder.Entity<Network>()
-                .Property(p => p.Name)
+                .Property(n => n.Name)
                 .IsRequired()
                 .HasMaxLength(150);
 
@@ -37,12 +38,12 @@ namespace ChargeLog.Context
             .ToTable("Location");
 
             builder.Entity<Location>()
-                .Property(p => p.Name)
+                .Property(l => l.Name)
                 .IsRequired()
                 .HasMaxLength(150);
 
             builder.Entity<Location>()
-                .Property(p => p.Address)
+                .Property(l => l.Address)
                 .HasMaxLength(150);
 
             // session table setup 
@@ -56,17 +57,17 @@ namespace ChargeLog.Context
             .ToTable("Car");
 
             builder.Entity<Car>()
-                .Property(p => p.Year)
+                .Property(c => c.Year)
                 .IsRequired()
                 .HasMaxLength(10);
 
             builder.Entity<Car>()
-                .Property(p => p.Make)
+                .Property(c => c.Make)
                 .IsRequired()
                 .HasMaxLength(50);
 
             builder.Entity<Car>()
-               .Property(p => p.Model)
+               .Property(c => c.Model)
                .IsRequired()
                .HasMaxLength(50);
 
@@ -76,7 +77,17 @@ namespace ChargeLog.Context
             .ToTable("Group");
 
             builder.Entity<Group>()
-                .Property(p => p.Name)
+                .Property(g => g.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            // Import table setup 
+
+            builder.Entity<Import>()
+                .ToTable("Import");
+
+            builder.Entity<Import>()
+                .Property(i => i.Type)
                 .IsRequired()
                 .HasMaxLength(50);
         }

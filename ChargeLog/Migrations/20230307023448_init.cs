@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ChargeLog.Migrations
 {
+    /// <inheritdoc />
     public partial class init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -15,6 +17,7 @@ namespace ChargeLog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Year = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Make = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
@@ -30,6 +33,7 @@ namespace ChargeLog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -38,16 +42,35 @@ namespace ChargeLog.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Import",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NetworkCount = table.Column<int>(type: "int", nullable: false),
+                    LocationCount = table.Column<int>(type: "int", nullable: false),
+                    SessionCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Import", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Network",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Rate = table.Column<double>(type: "float", nullable: false),
                     HaveAccount = table.Column<bool>(type: "bit", nullable: false),
                     IsPartner = table.Column<bool>(type: "bit", nullable: false),
-                    DefaultChargeType = table.Column<int>(type: "int", nullable: false)
+                    DefaultChargeType = table.Column<int>(type: "int", nullable: false),
+                    ImportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,9 +83,11 @@ namespace ChargeLog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    NetworkId = table.Column<int>(type: "int", nullable: false)
+                    NetworkId = table.Column<int>(type: "int", nullable: false),
+                    ImportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,6 +106,7 @@ namespace ChargeLog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     KWh = table.Column<double>(type: "float", nullable: false),
@@ -89,7 +115,8 @@ namespace ChargeLog.Migrations
                     ChargeType = table.Column<int>(type: "int", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: false),
                     CarId = table.Column<int>(type: "int", nullable: false),
-                    ThroughNetworkId = table.Column<int>(type: "int", nullable: true)
+                    ThroughNetworkId = table.Column<int>(type: "int", nullable: true),
+                    ImportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,10 +190,14 @@ namespace ChargeLog.Migrations
                 column: "ThroughNetworkId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "GroupSession");
+
+            migrationBuilder.DropTable(
+                name: "Import");
 
             migrationBuilder.DropTable(
                 name: "Group");
