@@ -90,6 +90,11 @@ namespace ChargeLog.Context
                 .Property(i => i.Type)
                 .IsRequired()
                 .HasMaxLength(50);
+
+            builder.Entity<Import>()
+                .Property(i => i.FileName)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }

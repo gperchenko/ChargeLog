@@ -8,6 +8,9 @@ namespace ChargeLog.Pages
     {
         [Inject]
         required public IChargeLogService ChargeLogService { get; init; }
+
+        [Inject]
+        required public IImportService ImportService { get; init; }
        
         [Inject]
         required public AppState AppState { get; init; }

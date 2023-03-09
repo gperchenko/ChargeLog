@@ -49,6 +49,7 @@ namespace ChargeLog.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NetworkCount = table.Column<int>(type: "int", nullable: false),
                     LocationCount = table.Column<int>(type: "int", nullable: false),
                     SessionCount = table.Column<int>(type: "int", nullable: false)

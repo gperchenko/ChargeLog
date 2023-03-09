@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChargeLog.Migrations
 {
     [DbContext(typeof(ChargeLogContext))]
-    [Migration("20230307023448_init")]
+    [Migration("20230309024228_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -87,6 +87,11 @@ namespace ChargeLog.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("LocationCount")
                         .HasColumnType("int");
