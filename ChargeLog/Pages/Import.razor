@@ -2,6 +2,91 @@
 
 @inherits PageBase
 
-<h3>Import</h3>
+<h1>Import List</h1>
+
+<h4>New Import</h4>
+
+<EditForm Model="@newImport" OnValidSubmit="@ProcessImport">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col-2">
+            <label for="mportType">Import Type</label>
+            <InputSelect id="importType" @bind-Value="newImport.ImportType" class="form-select">
+
+                <option value="">Select Import type</option>
+
+                @foreach (var importType in importTypes)
+                {
+                    <option value="@importType">@importType</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="col-2">
+            <label for="fileName">File Name</label>
+            <InputSelect id="importType" @bind-Value="newImport.FileName" class="form-select">
+
+                <option value="">Select file</option>
+
+                @foreach (var fileName in fileNames)
+                {
+                    <option value="@fileName">@fileName</option>
+                }
+            </InputSelect>
+        </div>
+
+        @if (cars.Count > 1)
+        {
+            <div class="col-2">
+                <label for="car">Car</label>
+                <InputSelect id="car" @bind-Value="newImport.CarId" class="form-select">
+
+                    <option value="0">Select car</option>
+
+                    @foreach (var car in cars)
+                    {
+                        <option value="@car.Id">@car.DisplayName</option>
+                    }
+                </InputSelect>
+            </div>
+        }
+
+        <div class="col-1 align-self-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</EditForm>
+
+<div class="padding-left-5">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>File</th>
+                <th>Network Cnt</th>
+                <th>Location Cnt</th>
+                <th>Session Cnt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var import in imports)
+            {
+                <tr>
+                    <td scope="row">@import.CreateDate.ToString(Config.DateFormat)</td>
+                    <td scope="row">@import.Type</td>
+                    <td scope="row">@import.FileName</td>
+                    <td scope="row">@import.NetworkCount</td>
+                    <td scope="row">@import.LocationCount</td>
+                    <td scope="row">@import.SessionCount</td>
+                   
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 

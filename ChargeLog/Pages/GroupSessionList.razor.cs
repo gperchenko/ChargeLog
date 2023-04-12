@@ -9,11 +9,11 @@ namespace ChargeLog.Pages
         [Parameter]
         public int GroupId { get; set; }
 
-        private List<SessionGroupListItem> _sessionList = new List<SessionGroupListItem>();
+        private List<SessionGroupListItem> _sessions = new List<SessionGroupListItem>();
 
         protected override async Task OnInitializedAsync()
         {
-            _sessionList = await ChargeLogService.GetSessionsByGroupAsync(GroupId);
+            _sessions = await ChargeLogService.GetSessionsByGroupAsync(GroupId);
             Config = ChargeLogService.GetConfig();
         }
     }
