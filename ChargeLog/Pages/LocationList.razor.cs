@@ -23,7 +23,7 @@ namespace ChargeLog.Pages
             State = _networkState.OpenItems![NetworkId];
             State.OnChange += ReloadLocationList;
             _locationList = await ChargeLogService.GetLocationListAsync(NetworkId, MonthOffset);
-            Config = ChargeLogService.GetConfig();            
+            Config = ConfigService.GetConfig();            
         }
 
         private async void ReloadLocationList()

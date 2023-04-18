@@ -13,7 +13,7 @@ namespace ChargeLog.Pages
         {
             State = AppState.DashboardState;
             State.OnChange += ReloadDashboardAsync;
-            Config = ChargeLogService.GetConfig();
+            Config = ConfigService.GetConfig();
             var totalsRow = await ChargeLogService.GetTotalsAsync();            
             _itemsDisplayedMax = Config.MonthGroupSize;
             _tableRows.Add(totalsRow);

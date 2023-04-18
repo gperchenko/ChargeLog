@@ -14,7 +14,6 @@ namespace ChargeLog.Services
         Task AddGroupToSessionAsync(int sessionId, int groupId);
         Task RemoveGroupFromSessionAsync(int sessionId, int groupId);
         Task<List<KeyValue>> GetAllGroupsAsync();
-        InterfaceConfig GetConfig();
         Task<List<Car>> GetCarsAsync();
         Task AddCarAsync(Car car);
         Task<List<GroupListItem>> GetGroupsTotalsAsync();

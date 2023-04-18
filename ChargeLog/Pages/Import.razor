@@ -53,6 +53,19 @@
             </div>
         }
 
+        <div class="col-2">
+            <label for="group">Group</label>
+            <InputSelect id="group" @bind-Value="newImport.GroupId" class="form-select">
+
+                <option value="0">Select group</option>
+
+                @foreach (var group in groups)
+                {
+                    <option value="@group.Key">@group.Value</option>
+                }
+            </InputSelect>
+        </div>
+
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

@@ -12,7 +12,7 @@ namespace ChargeLog.Pages
         protected override async Task OnInitializedAsync()
         {
             groups = await ChargeLogService.GetGroupsTotalsAsync();
-            Config = ChargeLogService.GetConfig();
+            Config = ConfigService.GetConfig();
         }
 
         private async Task AddGroup()

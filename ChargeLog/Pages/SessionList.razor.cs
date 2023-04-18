@@ -28,7 +28,7 @@ namespace ChargeLog.Pages
             State = _locationState.OpenItems![LocationId];
             State.OnChange += ReloadSessionListAsync;
             _sessionList = await ChargeLogService.GetSessionListAsync(LocationId, MonthOffset);
-            Config = ChargeLogService.GetConfig();
+            Config = ConfigService.GetConfig();
         }
 
         private async void ReloadSessionListAsync()

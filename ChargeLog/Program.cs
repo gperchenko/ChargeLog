@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ChargeLogContext>(
     ServiceLifetime.Transient);
 builder.Services.AddTransient<IChargeLogService, ChargeLogService>();
 builder.Services.AddTransient<IImportService, ImportService>();
+builder.Services.AddSingleton<IConfigService, ConfigService>();
 builder.Services.AddSingleton<AppState>();
 
 var app = builder.Build();

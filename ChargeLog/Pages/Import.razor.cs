@@ -16,7 +16,7 @@ namespace ChargeLog.Pages
         protected override async Task OnInitializedAsync()
         {
             imports = ImportService.GetImports();
-            Config = ChargeLogService.GetConfig();
+            Config = ConfigService.GetConfig();
             importTypes = ImportService.GetImportTypes();
             fileNames = ImportService.GetFileNames();
             cars = await ChargeLogService.GetCarsAsync();

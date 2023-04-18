@@ -7,22 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace ChargeLog.Services
 {
     public class ChargeLogService : IChargeLogService
-    {
-        private readonly IConfiguration? _config;
+    {        
         private readonly  ChargeLogContext _chargeLogContext;
 
         public ChargeLogService(IConfiguration config, ChargeLogContext context)
         {
-            _config = config;
             _chargeLogContext = context;
-        }
-
-        public InterfaceConfig GetConfig()
-        {
-            var interfaceConfig = new InterfaceConfig();
-            _config?.GetSection(InterfaceConfig.InterfaceParams).Bind(interfaceConfig);
-
-            return interfaceConfig;
         }
 
         public async Task<DashboardMainTableRow> GetTotalsAsync(int monthOffset = 1)

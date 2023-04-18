@@ -11,7 +11,10 @@ namespace ChargeLog.Pages
 
         [Inject]
         required public IImportService ImportService { get; init; }
-       
+
+        [Inject]
+        required public IConfigService ConfigService { get; init; }
+
         [Inject]
         required public AppState AppState { get; init; }
 
