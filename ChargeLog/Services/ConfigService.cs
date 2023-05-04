@@ -11,12 +11,20 @@ namespace ChargeLog.Services
             _config = config;
         }
 
-        public InterfaceConfig GetConfig()
+        public InterfaceConfig GetInterfaceConfig()
         {
             var interfaceConfig = new InterfaceConfig();
             _config?.GetSection(InterfaceConfig.InterfaceParams).Bind(interfaceConfig);
 
             return interfaceConfig;
+        }
+
+        public BackendConfig GetBackendConfig()
+        {
+            var backendConfig = new BackendConfig();
+            _config?.GetSection(BackendConfig.BackendParams).Bind(backendConfig);
+
+            return backendConfig;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace ChargeLog.Services
     public interface IImportService
     {
         List<string> GetImportTypes();
-        List<string> GetFileNames();
-        List<ImportListItem> GetImports();
-        ImportResults ImportFile(string ImportType, string FileName, int CarId = 0, int GroupId = 0);
+        Task<List<string>> GetFileNamesAsync();
+        Task<List<ImportListItem>> GetImportsAsync();
+        Task<ImportResults> ImportFileAsync(string ImportType, string FileName, int CarId = 0, int GroupId = 0);
     }
 }

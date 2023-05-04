@@ -4,6 +4,7 @@ namespace ChargeLog.Services
 {
     public interface IConfigService
     {
-        InterfaceConfig GetConfig();
+        InterfaceConfig GetInterfaceConfig();
+        BackendConfig GetBackendConfig();
     }
 }

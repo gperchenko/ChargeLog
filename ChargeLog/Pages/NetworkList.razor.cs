@@ -16,7 +16,7 @@ namespace ChargeLog.Pages
         {
             State = AppState.DashboardState.OpenItems![DashboardIdx];
             State.OnChange += ReloadNetworkList;
-            Config = ConfigService.GetConfig();
+            Config = ConfigService.GetInterfaceConfig();
             _networkList = await ChargeLogService.GetNetworkListAsync(MonthOffset);            
         }
 

@@ -1,46 +1,54 @@
-﻿using ChargeLog.Models;
+﻿using ChargeLog.Context;
+using ChargeLog.DBModels;
+using ChargeLog.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChargeLog.Services
 {
     public class ImportService : IImportService
     {
-        private readonly Dictionary<string, Func<string, string, int, int, ImportResults>> _importProviders;    
-        
-        public ImportService() 
+        private readonly Dictionary<string, Func<DateTime, int, string, string, int, int, ImportResults>> _importProviders;
+        private readonly IConfigService _configService;
+        private readonly ChargeLogContext _chargeLogContext;
+
+        public ImportService(IConfigService configService, ChargeLogContext context) 
         {
+            _configService = configService;
+            _chargeLogContext = context;
             _importProviders = new();
-            _importProviders["Test"] = new Func<string, string, int, int, ImportResults>((i, f, c, g) => { return LoadNetworks(i, f, c, g); });
-
+            _importProviders["Test"] = new 
+                Func<DateTime, int, string, string, int, int, ImportResults>((createDate, importId, importType, fileName, carId, groupId) => 
+                        { return LoadNetworks(createDate, importId, importType, fileName, carId, groupId); });
         }
 
-        public List<string> GetFileNames()
+        public async Task<List<string>> GetFileNamesAsync()
         {
-            return new List<string>() { "File1", "File2" };
+            var imports = await _chargeLogContext.Imports.ToListAsync();
+            var backendConfig = _configService.GetBackendConfig();
+
+            var files = Directory.GetFiles(backendConfig.ImportFolder!, backendConfig.FileSearchPatten!)
+                .Select(f => f.Replace(backendConfig.ImportFolder!, ""))
+                .Where(f => imports.All(i => i.FileName != f)).ToList();
+
+            return files;
         }
 
-        public List<ImportListItem> GetImports()
+        public async Task<List<ImportListItem>> GetImportsAsync()
         {
-            return new List<ImportListItem>
-            {
-                new ImportListItem()
-                {
-                    CreateDate = DateTime.Now,
-                    Type = "Import1",
-                    FileName = "file1",
-                    NetworkCount = 1,
-                    LocationCount = 2,
-                    SessionCount = 3
-                },
-                new ImportListItem()
-                {
-                    CreateDate = DateTime.Now.AddDays(-1),
-                    Type = "Import2",
-                    FileName = "file2",
-                    NetworkCount = 0,
-                    LocationCount = 5,
-                    SessionCount = 10
-                },
-            };
+            var imports = await _chargeLogContext.Imports
+                 .OrderByDescending(i => i.CreateDate)
+                 .Select(i => new ImportListItem()
+                 {
+                     CreateDate = i.CreateDate,
+                     Type = i.Type,
+                     FileName = i.FileName,
+                     NetworkCount = i.NetworkCount,
+                     LocationCount = i.LocationCount,
+                     SessionCount = i.SessionCount
+                 })
+                .ToListAsync();
+
+            return imports;
         }
 
         public List<string> GetImportTypes()
@@ -55,15 +63,40 @@ namespace ChargeLog.Services
             return result;
         }
 
-        public ImportResults ImportFile(string ImportType, string FileName, int CarId = 0, int GroupId = 0)
+        public async Task<ImportResults> ImportFileAsync(string ImportType, string FileName, int CarId = 0, int GroupId = 0)
         {
+            var currentDate = DateTime.Now;
+
+            var newImport = new Import()
+            {
+                CreateDate = currentDate,
+                Type = ImportType,
+                FileName = FileName,
+            };
+
+            _chargeLogContext.Imports.Add(newImport);
+            await _chargeLogContext.SaveChangesAsync();
+
             var provider = _importProviders[ImportType];
 
+            var importResult = provider(currentDate, newImport.Id, ImportType, FileName, CarId, GroupId);
 
-            return provider(ImportType, FileName, CarId, GroupId);
+            newImport.NetworkCount = importResult.NetworkCount;
+            newImport.LocationCount = importResult.LocationCount;
+            newImport.SessionCount = importResult.SessionCount;
+
+            await _chargeLogContext.SaveChangesAsync();
+
+            return importResult;
         }
 
-        private ImportResults LoadNetworks(string ImportType, string FileName, int CarId = 0, int GroupId = 0)
+        private ImportResults LoadNetworks(
+            DateTime currentDate, 
+            int importId, 
+            string importType, 
+            string fileName, 
+            int carId = 0, 
+            int groupId = 0)
         {
             return new ImportResults()
             {

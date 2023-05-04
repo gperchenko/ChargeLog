@@ -14,7 +14,7 @@ namespace ChargeLog.Pages
         protected override async Task OnInitializedAsync()
         {
             _sessions = await ChargeLogService.GetSessionsByGroupAsync(GroupId);
-            Config = ConfigService.GetConfig();
+            Config = ConfigService.GetInterfaceConfig();
         }
     }
 }

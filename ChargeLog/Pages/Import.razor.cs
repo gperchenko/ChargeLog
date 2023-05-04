@@ -15,17 +15,22 @@ namespace ChargeLog.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            imports = ImportService.GetImports();
-            Config = ConfigService.GetConfig();
+            imports = await ImportService.GetImportsAsync();
+            Config = ConfigService.GetInterfaceConfig();
             importTypes = ImportService.GetImportTypes();
-            fileNames = ImportService.GetFileNames();
+            fileNames = await ImportService.GetFileNamesAsync();
             cars = await ChargeLogService.GetCarsAsync();
             groups = await ChargeLogService.GetAllGroupsAsync();
         }
 
-        private void ProcessImport()
+        private async void ProcessImport()
         {
-            ImportService.ImportFile(newImport.ImportType!, newImport.FileName!, newImport.CarId, newImport.GroupId);
+            await ImportService.ImportFileAsync(newImport.ImportType!, newImport.FileName!, newImport.CarId, newImport.GroupId);
+            imports = await ImportService.GetImportsAsync();
+            fileNames = await ImportService.GetFileNamesAsync();
+            newImport = new ImportView();
+            StateHasChanged();
+
         }
     }
 }
