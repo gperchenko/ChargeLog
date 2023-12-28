@@ -133,8 +133,8 @@ namespace ChargeLog.Services
         }
 
         public async Task<List<GroupListItem>> GetGroupsTotalsAsync()
-        {
-            var groups = await _chargeLogContext.Groups
+        {            
+            var groups = await _chargeLogContext?.Groups
                 .Include(g => g.Sessions)
                 .ThenInclude(s => s.Location)
                 .ThenInclude(l => l.Network)

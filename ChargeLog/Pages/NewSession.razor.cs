@@ -45,8 +45,8 @@ namespace ChargeLog.Pages
         {
             if (network != null && network.Rate > 0)
             {
-                double kWh;
-                double.TryParse(newSession.KWh, out kWh);
+                decimal kWh;
+                decimal.TryParse(newSession.KWh, out kWh);
 
                 newSession.Price = (kWh * network.Rate).ToString();
             }
@@ -59,11 +59,11 @@ namespace ChargeLog.Pages
 
         private async Task AddSession()
         {
-            double kWh = 0, price = 0, discount = 0;
+            decimal kWh = 0, price = 0, discount = 0;
 
-            double.TryParse(newSession.KWh, out kWh);
-            double.TryParse(newSession.Price, out price);
-            double.TryParse(newSession.Discount, out discount);
+            decimal.TryParse(newSession.KWh, out kWh);
+            decimal.TryParse(newSession.Price, out price);
+            decimal.TryParse(newSession.Discount, out discount);
 
             if (cars.Count == 1)
             {

@@ -38,7 +38,7 @@
             {
                 <tr @onclick="()=> TuggleShowDetails(State, session.Id)" class=@(IsShowDetails(State, session.Id) ? "session-list-item-open" : "")>
                     <td scope="row">@session.Date.ToString(Config.DateFormat)</td>
-                    <td scope="row">@session.KWh</td>
+                    <td scope="row">@session.KWh.ToString("N3")</td>
                     <td scope="row">@session.Duration.ToString(Config.TimeSpanFormat)</td>
                     <td scope="row">@session.ChargeType</td>
                     <td scope="row">@session.Car</td>

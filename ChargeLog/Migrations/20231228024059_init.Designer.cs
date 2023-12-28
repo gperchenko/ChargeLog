@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChargeLog.Migrations
 {
     [DbContext(typeof(ChargeLogContext))]
-    [Migration("20230309024228_init")]
+    [Migration("20231228024059_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -87,11 +87,6 @@ namespace ChargeLog.Migrations
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("LocationCount")
                         .HasColumnType("int");
@@ -173,8 +168,9 @@ namespace ChargeLog.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<double>("Rate")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Rate")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
 
@@ -201,8 +197,9 @@ namespace ChargeLog.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(5, 3)
+                        .HasColumnType("decimal(5,3)");
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
@@ -210,14 +207,16 @@ namespace ChargeLog.Migrations
                     b.Property<int?>("ImportId")
                         .HasColumnType("int");
 
-                    b.Property<double>("KWh")
-                        .HasColumnType("float");
+                    b.Property<decimal>("KWh")
+                        .HasPrecision(5, 3)
+                        .HasColumnType("decimal(5,3)");
 
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasPrecision(5, 3)
+                        .HasColumnType("decimal(5,3)");
 
                     b.Property<int?>("ThroughNetworkId")
                         .HasColumnType("int");

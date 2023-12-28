@@ -32,6 +32,12 @@ namespace ChargeLog.Context
                 .IsRequired()
                 .HasMaxLength(150);
 
+            builder.Entity<Network>()
+               .Property(n => n.Rate)
+         //      .HasColumnType("decimal(5,2)")
+               .HasPrecision(5,2)
+               .IsRequired();
+           
             // Location table setup 
 
             builder.Entity<Location>()
@@ -50,6 +56,18 @@ namespace ChargeLog.Context
 
             builder.Entity<Session>()
             .ToTable("Session");
+
+            builder.Entity<Session>()
+                .Property(c => c.KWh)
+                .HasPrecision(5,3);
+
+            builder.Entity<Session>()
+                .Property(c => c.Price)
+                .HasPrecision(5, 3);
+
+            builder.Entity<Session>()
+                .Property(c => c.Discount)
+                .HasPrecision(5, 3);
 
             // Car table setup 
 
@@ -88,11 +106,6 @@ namespace ChargeLog.Context
 
             builder.Entity<Import>()
                 .Property(i => i.Type)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Entity<Import>()
-                .Property(i => i.FileName)
                 .IsRequired()
                 .HasMaxLength(50);
         }

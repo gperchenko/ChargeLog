@@ -8,9 +8,9 @@ namespace ChargeLog.DBModels
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public DateTime Date { get; set; }
         public TimeSpan Duration { get; set; }
-        public double KWh { get; set; }
-        public double Price { get; set; }
-        public double Discount { get; set; }
+        public decimal KWh { get; set; }
+        public decimal Price { get; set; }
+        public decimal Discount { get; set; }
         public ChargeType ChargeType { get; set; }
         public int LocationId { get; set; }
         public Location? Location { get; set; }

@@ -39,7 +39,7 @@
                     <td scope="row">@location.Name</td>
                     <td scope="row">@location.Address</td>
                     <td scope="row">@location.SessionCount</td>
-                    <td scope="row">@location.KWh</td>
+                    <td scope="row">@location.KWh.ToString("N3")</td>
                     <td scope="row">@location.Duration.ToString(Config.TimeSpanFormat)</td>
                     <td scope="row">@location.Price.ToString("C")</td>
                     <td scope="row">@location.Discount.ToString("C")</td>

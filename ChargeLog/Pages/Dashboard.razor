@@ -38,7 +38,7 @@ else
                         <th scope="row">@_tableRows[idx].NetworkCount</th>
                         <th scope="row">@_tableRows[idx].LocationCount</th>
                         <th scope="row">@_tableRows[idx].SessionCount</th>
-                        <th scope="row">@_tableRows[idx].KWh</th>
+                        <th scope="row">@_tableRows[idx].KWh.ToString("N3")</th>
                         <th scope="row">@_tableRows[idx].Duration.ToString(Config.TimeSpanFormat)</th>
                         <th scope="row">@_tableRows[idx].Price.ToString("C")</th>
                         <th scope="row">@_tableRows[idx].Discount.ToString("C")</th>
@@ -52,7 +52,7 @@ else
                         <td scope="row">@_tableRows[idx].NetworkCount</td>
                         <td scope="row">@_tableRows[idx].LocationCount</td>
                         <td scope="row">@_tableRows[idx].SessionCount</td>
-                        <td scope="row">@_tableRows[idx].KWh</td>
+                        <td scope="row">@_tableRows[idx].KWh.ToString("N3")</td>
                         <td scope="row">@_tableRows[idx].Duration.ToString(Config.TimeSpanFormat)</td>
                         <td scope="row">@_tableRows[idx].Price.ToString("C")</td>
                         <td scope="row">@_tableRows[idx].Discount.ToString("C")</td>

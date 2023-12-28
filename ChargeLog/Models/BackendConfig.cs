@@ -4,8 +4,6 @@
     {
         public const string BackendParams = "BackendParams";
 
-        public string? ImportFolder { get; set; }
-        public string? FileSearchPatten { get; set; }
-
+        public string? ImportFile { get; set; }
     }
 }

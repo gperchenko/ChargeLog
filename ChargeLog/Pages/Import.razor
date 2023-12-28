@@ -24,48 +24,6 @@
             </InputSelect>
         </div>
 
-        <div class="col-2">
-            <label for="fileName">File Name</label>
-            <InputSelect id="importType" @bind-Value="newImport.FileName" class="form-select">
-
-                <option value="">Select file</option>
-
-                @foreach (var fileName in fileNames)
-                {
-                    <option value="@fileName">@fileName</option>
-                }
-            </InputSelect>
-        </div>
-
-        @if (cars.Count > 1)
-        {
-            <div class="col-2">
-                <label for="car">Car</label>
-                <InputSelect id="car" @bind-Value="newImport.CarId" class="form-select">
-
-                    <option value="0">Select car</option>
-
-                    @foreach (var car in cars)
-                    {
-                        <option value="@car.Id">@car.DisplayName</option>
-                    }
-                </InputSelect>
-            </div>
-        }
-
-        <div class="col-2">
-            <label for="group">Group</label>
-            <InputSelect id="group" @bind-Value="newImport.GroupId" class="form-select">
-
-                <option value="0">Select group</option>
-
-                @foreach (var group in groups)
-                {
-                    <option value="@group.Key">@group.Value</option>
-                }
-            </InputSelect>
-        </div>
-
         <div class="col-1 align-self-end">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

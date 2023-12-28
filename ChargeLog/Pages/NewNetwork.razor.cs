@@ -9,9 +9,9 @@ namespace ChargeLog.Pages
 
         protected async Task AddNetwork()
         {
-            Double rate = 0;
+            decimal rate = 0;
 
-            Double.TryParse(newNetworkView.Rate, out rate);
+            decimal.TryParse(newNetworkView.Rate, out rate);
 
             var provider = new Network()
             {

@@ -8,7 +8,7 @@ namespace ChargeLog.DBModels
         public int Id { get; set; }
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public string? Name { get; set; }
-        public Double Rate { get; set; }
+        public decimal Rate { get; set; }
         public bool HaveAccount { get; set; }  
         public bool IsPartner { get; set; }
         public ChargeType DefaultChargeType { get; set; }

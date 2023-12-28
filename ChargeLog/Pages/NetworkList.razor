@@ -39,7 +39,7 @@
                 <td scope="row">@network.Name</td>
                 <td scope="row">@network.LocationCount</td>
                 <td scope="row">@network.SessionCount</td>
-                <td scope="row">@network.KWh</td>
+                <td scope="row">@network.KWh.ToString("N3")</td>
                 <td scope="row">@network.Duration.ToString(Config.TimeSpanFormat)</td>
                 <td scope="row">@network.Price.ToString("C")</td>
                 <td scope="row">@network.Discount.ToString("C")</td>

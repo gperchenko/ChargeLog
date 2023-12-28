@@ -7,9 +7,9 @@ namespace ChargeLog.Models
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Duration { get; set; }
-        public double KWh { get; set; }
-        public double Price { get; set; }
-        public double Discount { get; set; }
+        public decimal KWh { get; set; }
+        public decimal Price { get; set; }
+        public decimal Discount { get; set; }
         public string? ChargeType { get; set; }       
         public string? Car { get; set; }
         public string? ThroughNetwork { get; set; }

@@ -18,19 +18,14 @@ namespace ChargeLog.Pages
             imports = await ImportService.GetImportsAsync();
             Config = ConfigService.GetInterfaceConfig();
             importTypes = ImportService.GetImportTypes();
-            fileNames = await ImportService.GetFileNamesAsync();
-            cars = await ChargeLogService.GetCarsAsync();
-            groups = await ChargeLogService.GetAllGroupsAsync();
         }
 
         private async void ProcessImport()
         {
-            await ImportService.ImportFileAsync(newImport.ImportType!, newImport.FileName!, newImport.CarId, newImport.GroupId);
+            await ImportService.ImportFileAsync(newImport.ImportType!);
             imports = await ImportService.GetImportsAsync();
-            fileNames = await ImportService.GetFileNamesAsync();
             newImport = new ImportView();
             StateHasChanged();
-
         }
     }
 }
